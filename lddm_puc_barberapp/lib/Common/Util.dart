@@ -44,6 +44,10 @@ class Util {
     return MediaQuery.of(globalContext).size.width * d;
   }
 
+  static double getHeight(double d) {
+    return MediaQuery.of(globalContext).size.height * d;
+  }
+
   static TextStyle fontStyle([double d = 15, Color? color = Colors.black]) {
     return TextStyle(fontSize: d, color: color);
   }

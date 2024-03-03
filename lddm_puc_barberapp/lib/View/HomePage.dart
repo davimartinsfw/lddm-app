@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Common/HomeHeader.dart';
+import 'package:lddm_puc_barberapp/Common/NavBar.dart';
 import 'package:lddm_puc_barberapp/Common/PageHeader.dart';
 import 'package:lddm_puc_barberapp/initializers/AppWidget.dart';
 
@@ -46,11 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
