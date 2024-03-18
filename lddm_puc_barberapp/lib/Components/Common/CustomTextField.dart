@@ -69,8 +69,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             hintStyle: TextStyle(color: Util.HeaderArrow, fontSize: 15),
             errorText: error(),
             filled: true,
-            fillColor:
-                widget.field.readOnly ? Util.PrimaryColor : Colors.transparent,
+            fillColor: Util.PrimaryColor,
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(color: Util.BorderColor)),
