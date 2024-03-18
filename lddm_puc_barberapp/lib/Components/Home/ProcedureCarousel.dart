@@ -26,7 +26,7 @@ class _ProcedureCarouselState extends State<ProcedureCarousel> {
         ),
         Container(
           width: Util.getWidth(1),
-          height: Util.getHeight(0.28),
+          height: Util.getHeight(0.29),
           child: ListView.builder(
             padding: EdgeInsets.only(right: 16),
               shrinkWrap: true,

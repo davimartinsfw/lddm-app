@@ -25,7 +25,7 @@ class _BarberCarouselState extends State<BarberCarousel> {
         ),
         Container(
           width: Util.getWidth(1),
-          height: Util.getHeight(0.26),
+          height: Util.getHeight(0.29),
           child: ListView.builder(
               padding: EdgeInsets.only(right: 16),
               shrinkWrap: true,

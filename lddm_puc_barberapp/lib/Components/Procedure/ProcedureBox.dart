@@ -19,8 +19,8 @@ class _ProcedureBoxState extends State<ProcedureBox> {
   Widget build(BuildContext context) {
     return Container(
         width: Util.getWidth(0.4),
-        height: Util.getHeight(0.2),
-        padding: EdgeInsets.fromLTRB(10,10,10,0),
+        height: Util.getHeight(0.29),
+        padding: EdgeInsets.fromLTRB(10,0,10,0),
         margin: EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
           color: Util.PrimaryColor,
@@ -28,11 +28,12 @@ class _ProcedureBoxState extends State<ProcedureBox> {
           boxShadow: Util.getBoxShadow()
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //SvgPicture.asset("assets/img/procedure-example.svg")
             Container(
               margin: EdgeInsets.only(bottom: 8),
-              height: Util.getHeight(0.13),
+              height: Util.getHeight(0.11),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Util.TextColor,

@@ -18,7 +18,7 @@ class _BarberBoxState extends State<BarberBox> {
   Widget build(BuildContext context) {
     return Container(
       width: Util.getWidth(0.4),
-      padding: EdgeInsets.fromLTRB(10,10,10,0),
+      height: Util.getHeight(0.29),
       margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
           color: Util.PrimaryColor,
@@ -26,6 +26,7 @@ class _BarberBoxState extends State<BarberBox> {
           boxShadow: Util.getBoxShadow()
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           //SvgPicture.asset(widget.barber.image),
           Container(
