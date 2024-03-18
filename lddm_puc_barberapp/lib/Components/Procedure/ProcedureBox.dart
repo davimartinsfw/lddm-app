@@ -7,55 +7,67 @@ import 'package:lddm_puc_barberapp/Models/Procedure/Procedure.dart';
 
 class ProcedureBox extends StatefulWidget {
   final Procedure p;
+  final bool shouldShowButton;
 
-  const ProcedureBox({super.key, required this.p});
+  const ProcedureBox(
+      {super.key, required this.p, this.shouldShowButton = true});
 
   @override
   State<ProcedureBox> createState() => _ProcedureBoxState();
 }
 
 class _ProcedureBoxState extends State<ProcedureBox> {
+  Widget renderButton() {
+    if (!widget.shouldShowButton) {
+      return Container();
+    }
+
+    return Container(
+        width: Util.getWidth(0.2),
+        child: SmallRoundedButton(txt: "Agendar", callBack: () {}));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: Util.getWidth(0.4),
-        height: Util.getHeight(0.29),
-        padding: EdgeInsets.fromLTRB(10,0,10,0),
-        margin: EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
+      width: Util.getWidth(0.4),
+      //height: Util.getHeight(0.29),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      margin: EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
           color: Util.PrimaryColor,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: Util.getBoxShadow()
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            //SvgPicture.asset("assets/img/procedure-example.svg")
-            Container(
-              margin: EdgeInsets.only(bottom: 8),
-              height: Util.getHeight(0.11),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Util.TextColor,
-              ),
+          boxShadow: Util.getBoxShadow()),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          //SvgPicture.asset("assets/img/procedure-example.svg")
+          Container(
+            margin: EdgeInsets.only(bottom: 8),
+            height: Util.getHeight(0.11),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Util.TextColor,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(widget.p.name, style: Util.fontStyleSB()),
-              ],
-            ),
-            Row(
-              children: [
-                Text(widget.p.duration + " min", style: Util.fontStyle(11,Util.HeaderArrow)),
-                Text(" • ", style: Util.fontStyle(11,Util.HeaderArrow)),
-                Text(widget.p.value, style: Util.fontStyle(11,Util.HeaderArrow)),
-              ],
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 8)),
-            Container(width: Util.getWidth(0.2) ,child: SmallRoundedButton(txt: "Agendar", callBack: () {}))
-          ],
-        ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(widget.p.name, style: Util.fontStyleSB()),
+            ],
+          ),
+          Row(
+            children: [
+              Text(widget.p.duration + " min",
+                  style: Util.fontStyle(11, Util.HeaderArrow)),
+              Text(" • ", style: Util.fontStyle(11, Util.HeaderArrow)),
+              Text(widget.p.value, style: Util.fontStyle(11, Util.HeaderArrow)),
+            ],
+          ),
+          Padding(padding: EdgeInsets.only(bottom: 8)),
+          renderButton()
+        ],
+      ),
     );
   }
 }
