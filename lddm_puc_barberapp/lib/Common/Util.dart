@@ -6,6 +6,8 @@ class Util {
   static const SecondaryColor = Color.fromRGBO(234, 113, 76, 1);
   static const BackgroundColor = Color.fromRGBO(248, 243, 240, 1);
   static const HeaderArrow = Color.fromRGBO(200, 200, 200, 1);
+  static const TextColor = Color.fromRGBO(100, 100, 100, 1);
+  static const BorderColor = Color.fromRGBO(187, 187, 187, 1);
 
   static MaterialColor getMaterialColor(Color color) {
     List strengths = <double>[.05];
@@ -48,15 +50,15 @@ class Util {
     return MediaQuery.of(globalContext).size.height * d;
   }
 
-  static TextStyle fontStyle([double d = 15, Color? color = Colors.black]) {
+  static TextStyle fontStyle([double d = 15, Color? color = TextColor]) {
     return TextStyle(fontSize: d, color: color);
   }
 
-  static TextStyle fontStyleSB([double d = 15, Color? color = Colors.black]) {
+  static TextStyle fontStyleSB([double d = 15, Color? color = TextColor]) {
     return TextStyle(fontSize: d, color: color, fontWeight: FontWeight.w600);
   }
 
-  static TextStyle fontStyleB([double d = 15, Color? color = Colors.black]) {
+  static TextStyle fontStyleB([double d = 15, Color? color = TextColor]) {
     return TextStyle(fontSize: d, color: color, fontWeight: FontWeight.w700);
   }
 }

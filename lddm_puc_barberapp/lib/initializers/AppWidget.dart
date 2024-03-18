@@ -17,7 +17,7 @@ class NordusApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: appTheme,
         debugShowCheckedModeBanner: false,
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        home: const MyHomePage(),
       ),
     );
   }
