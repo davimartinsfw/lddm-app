@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Common/Util.dart';
 import 'package:lddm_puc_barberapp/Components/Procedure/ProcedureBox.dart';
+import 'package:lddm_puc_barberapp/data/procedureMock.dart';
 import '../../Models/Procedure/Procedure.dart';
 
 class ProcedureCarousel extends StatefulWidget {
@@ -11,8 +12,7 @@ class ProcedureCarousel extends StatefulWidget {
 }
 
 class _ProcedureCarouselState extends State<ProcedureCarousel> {
-  Procedure p =
-      Procedure(id: 1, name: "Corte", value: "R\$80,00", duration: "60");
+  List<Procedure> p = MOCK_PROCEDURE;
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +26,16 @@ class _ProcedureCarouselState extends State<ProcedureCarousel> {
         ),
         Container(
           width: Util.getWidth(1),
-          height: Util.getHeight(0.29),
+          height: Util.getHeight(0.26),
           child: ListView.builder(
             padding: EdgeInsets.only(right: 16),
               shrinkWrap: true,
-              itemCount: 5,
+              itemCount: p.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, counter) {
                 return Padding(
                   padding: const EdgeInsets.only(left: 16),
-                  child: ProcedureBox(p: p),
+                  child: ProcedureBox(p: p[counter]),
                 );
               }),
         ),

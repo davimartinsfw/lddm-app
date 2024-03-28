@@ -4,6 +4,11 @@ import 'package:lddm_puc_barberapp/Common/Util.dart';
 import 'package:lddm_puc_barberapp/Components/Common/RoundedButton.dart';
 import 'package:lddm_puc_barberapp/Components/Common/SmallRoundedButton.dart';
 import 'package:lddm_puc_barberapp/Models/Procedure/Procedure.dart';
+import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
+import 'package:provider/provider.dart';
+
+import '../../Controllers/RouteController.dart';
+import '../../Controllers/ScheduleController.dart';
 
 class ProcedureBox extends StatefulWidget {
   final Procedure p;
@@ -17,21 +22,43 @@ class ProcedureBox extends StatefulWidget {
 }
 
 class _ProcedureBoxState extends State<ProcedureBox> {
+  late ScheduleController scheduleController;
+  late RouteController routeController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    scheduleController = context.read<ScheduleController>();
+    routeController = context.read<RouteController>();
+  }
+
   Widget renderButton() {
     if (!widget.shouldShowButton) {
       return Container();
     }
 
-    return Container(
-        width: Util.getWidth(0.2),
-        child: SmallRoundedButton(txt: "Agendar", callBack: () {}));
+    return Column(
+      children: [
+        Padding(padding: EdgeInsets.only(bottom: 8)),
+        Container(
+            width: Util.getWidth(0.2),
+            child: SmallRoundedButton(txt: "Agendar", callBack: () {
+                scheduleController.updateProcedure(widget.p.name);
+                scheduleController.updateProfessionalShow(true);
+
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  routeController.softPush(AppRoutes.PROCEDURELIST);
+                });
+            })),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: Util.getWidth(0.4),
-      //height: Util.getHeight(0.29),
       padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
       margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -39,17 +66,12 @@ class _ProcedureBoxState extends State<ProcedureBox> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: Util.getBoxShadow()),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          //SvgPicture.asset("assets/img/procedure-example.svg")
-          Container(
-            margin: EdgeInsets.only(bottom: 8),
-            height: Util.getHeight(0.11),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Util.TextColor,
-            ),
-          ),
+          ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                  child: Image.asset("assets/img/clube-teste-1.png"))),
+          Padding(padding: EdgeInsets.only(bottom: 12)),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -64,7 +86,6 @@ class _ProcedureBoxState extends State<ProcedureBox> {
               Text(widget.p.value, style: Util.fontStyle(11, Util.HeaderArrow)),
             ],
           ),
-          Padding(padding: EdgeInsets.only(bottom: 8)),
           renderButton()
         ],
       ),

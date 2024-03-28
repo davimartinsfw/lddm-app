@@ -49,16 +49,18 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  margin: EdgeInsets.only(top: 20),
-                  width: Util.getWidth(0.92),
-                  height: Util.getHeight(0.22),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Util.TextColor
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+                  child: InkWell(
+                    onTap: () {
+                      routeController.softPush(AppRoutes.ABOUTUS);
+                    },
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset('assets/img/clube-teste-1.png')),
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(top: 20)),
+                //Padding(padding: EdgeInsets.only(top: 20)),
                 ProcedureCarousel(),
                 Padding(padding: EdgeInsets.only(top: 20)),
                 BarberCarousel()

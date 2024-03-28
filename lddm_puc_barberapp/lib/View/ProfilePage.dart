@@ -7,7 +7,12 @@ import 'package:lddm_puc_barberapp/Common/PageHeader.dart';
 import 'package:lddm_puc_barberapp/Common/Util.dart';
 import 'package:lddm_puc_barberapp/Components/Common/CustomTextField.dart';
 import 'package:lddm_puc_barberapp/Components/Common/RoundedButton.dart';
+import 'package:lddm_puc_barberapp/Components/Profile/EditProfileField.dart';
+import 'package:lddm_puc_barberapp/Controllers/EditProfileController.dart';
+import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
 import 'package:lddm_puc_barberapp/Models/Profile/Field.dart';
+import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,30 +22,43 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  Field mockField = Field(
-    controller: TextEditingController(),
-    label: "Nome Completo",
-    hintText: "Digite seu nome",
-  );
-  TextEditingController mockController = TextEditingController();
+  late EditProfileController controller;
+  late RouteController routeController;
 
-  Widget renderField(TextEditingController controller, Field field) {
+  @override
+  void initState() {
+    super.initState();
+
+    controller = context.read<EditProfileController>();
+    routeController = context.read<RouteController>();
+  }
+
+  Widget renderField(
+      TextEditingController controller, Field field, String name) {
     return Padding(
       padding: EdgeInsets.only(bottom: 20),
-      child: CustomTextField(
+      child: EditProfileField(
         textEditingController: controller,
         field: field,
+        name: field.label ?? "",
       ),
     );
   }
 
   Widget renderFieldList() {
+    final controllers = controller.textControllers;
+    final fields = controller.mockProfile;
+
     return Column(
       children: [
-        renderField(mockController, mockField),
-        renderField(mockController, mockField),
-        renderField(mockController, mockField),
-        renderField(mockController, mockField)
+        renderField(controllers[fields[0].controllerName]!, fields[0],
+            fields[0].controllerName),
+        renderField(controllers[fields[1].controllerName]!, fields[1],
+            fields[1].controllerName),
+        renderField(controllers[fields[2].controllerName]!, fields[2],
+            fields[2].controllerName),
+        renderField(controllers[fields[3].controllerName]!, fields[3],
+            fields[3].controllerName),
       ],
     );
   }
@@ -48,12 +66,20 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget renderSchedules() {
     return Column(
       children: [
-        Padding(padding: EdgeInsets.only(top: 32, bottom: 16), child: 
-        Text("Nenhum Agendamento marcado", style: Util.fontStyle(15, Util.HeaderArrow), ),
+        Padding(
+          padding: EdgeInsets.only(top: 42, bottom: 25),
+          child: Text(
+            "Nenhum Agendamento marcado",
+            style: Util.fontStyle(15, Util.HeaderArrow),
+          ),
         ),
         Container(
             width: Util.getWidth(0.36),
-            child: RoundedButton(txt: "Agendar", callBack: () {})),
+            child: RoundedButton(
+                text: "Agendar",
+                callBackOnPressed: () {
+                  routeController.softPush(AppRoutes.PROCEDURELIST);
+                })),
       ],
     );
   }
@@ -61,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PageHeader(),
+      appBar: PageHeader("Seu perfil", routeController, true),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(

@@ -8,6 +8,9 @@ class Util {
   static const HeaderArrow = Color.fromRGBO(200, 200, 200, 1);
   static const TextColor = Color.fromRGBO(100, 100, 100, 1);
   static const BorderColor = Color.fromRGBO(187, 187, 187, 1);
+  static const DisableCalendar = Color.fromRGBO(236, 236, 236, 1);
+  static const DangerColor = Color.fromRGBO(255, 61, 0, 1);
+  static const InputColor = Color.fromRGBO(166, 166, 171, 1);
 
   static MaterialColor getMaterialColor(Color color) {
     List strengths = <double>[.05];
@@ -58,7 +61,7 @@ class Util {
     return TextStyle(fontSize: d, color: color, fontWeight: FontWeight.w600);
   }
 
-  static TextStyle fontStyleB([double d = 15, Color? color = TextColor]) {
+  static TextStyle fontStyleB([double d = 15, Color? color = PrimaryColor]) {
     return TextStyle(fontSize: d, color: color, fontWeight: FontWeight.w700);
   }
 }
