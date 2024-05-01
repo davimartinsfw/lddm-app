@@ -1,12 +1,12 @@
-import express from "express";
-import table from "./src/controllers/table.js";
+const express = require("express");
+const user = require("./src/routes/user.js");
 
 const app = express();
-app.get("/", (req, res) => {
-  res.send("epa");
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.get("/", (req, res) => {});
+app.use("/api/user", user.router);
 
 app.listen(3000, () => {
   console.log("ta escutando a porta 3000");
-  table.createTables();
 });
