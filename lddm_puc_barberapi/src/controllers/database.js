@@ -31,24 +31,23 @@ async function createConnection() {
 async function runQuery(query, obj = {}) {
   const connection = await createConnection();
   try {
-    connection.prepare(query, obj)
+    connection.prepare(query, obj);
     const [rows, fields] = await connection.query(query, obj);
     return rows;
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
 async function createTables() {
   const connection = await createConnection();
-  await connection.query(createTablesQuery, async (err, results, fields) => {
-    if (err) {
-      console.error("Erro ao criar a tabela:", err);
-      return err;
-    }
-
+  try {
+    await connection.query(createTablesQuery);
+  } catch (e) {
+    throw e;
+  } finally {
     await connection.end();
-  });
+  }
 }
 
 module.exports = {
