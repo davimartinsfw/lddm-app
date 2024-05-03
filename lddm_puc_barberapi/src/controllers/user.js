@@ -87,7 +87,6 @@ function createSchedule(payload) {
       console.log("Erro: "+err)
       return
     }
-    console.log("Agendado");
   })
 }
 
@@ -98,7 +97,6 @@ function cancelSchedule(payload) {
       console.log("Erro: "+err)
       return
     }
-    console.log("Cancelado");
   })
 }
 
@@ -109,7 +107,6 @@ function getAllScheduleUser(payload) {
       console.log("Erro: "+err)
       return
     }
-    console.log("Listado");
   })
 }
 function getAllScheduleBarber(payload) {
@@ -119,7 +116,6 @@ function getAllScheduleBarber(payload) {
       console.log("Erro: "+err)
       return
     }
-    console.log("Listado");
   })
 }
 function getSchedule(payload) {
@@ -129,7 +125,6 @@ function getSchedule(payload) {
       console.log("Erro: "+err)
       return
     }
-    console.log("Listado");
   })
 }
 
@@ -141,7 +136,6 @@ function updadeSchedule(payload) {
       console.log("Erro: "+err)
       return
     }
-    console.log("Alterado");
   })
 }
 
