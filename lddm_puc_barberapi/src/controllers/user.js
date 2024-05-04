@@ -142,7 +142,7 @@ function getSchedule(payload) {
   })
 }
 
-function updadeSchedule(payload) {
+function updateSchedule(payload) {
   const previous = connection.query('SELECT * FROM schedule WHERE id = ')
   const query = 'UPDATE schedule SET user_id = ?, barber_id = ?, procedure_id, horario = ?, foto_atual = ?, foto_corte = ? WHERE id= ?'
   connection.execute(query, [payload.user_id, payload.barber_id,payload.procedure_id,payload.horario,payload.foto_atual,payload.foto_corte, payload.id], (err, rows, columns) => {
