@@ -23,6 +23,7 @@ async function login(payload) {
   const isValid = await bcrypt.compare(password, dbPassword);
   if (isValid) {
     return {
+      id: resp[0].id,
       name: resp[0].name,
       emailname: resp[0].email,
       is_admin: resp[0].is_admin,
