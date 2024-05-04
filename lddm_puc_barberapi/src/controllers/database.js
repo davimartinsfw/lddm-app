@@ -3,7 +3,7 @@ const { config } = require("dotenv");
 
 config({ path: ".env" });
 
-const createTablesQuery = `
+const createUserTable = `
   CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -16,7 +16,15 @@ const createTablesQuery = `
     phone_number VARCHAR(11) NOT NULL
   );
 `;
-const createTableSchedule = `CREATE TABLE IF NOT EXISTS schedule(
+const createProcedureTable = `
+  CREATE TABLE IF NOT EXISTS procedures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(100) NOT NULL,
+    duration INT NOT NULL,
+    price FLOAT
+  );
+`;
+const createScheduleTable = `CREATE TABLE IF NOT EXISTS schedule(
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     barber_id INT NOT NULL,
@@ -24,7 +32,7 @@ const createTableSchedule = `CREATE TABLE IF NOT EXISTS schedule(
     horario TIMESTAMP NOT NULL,
     foto_atual BINARY,
     foto_corte BINARY
-  );`
+  );`;
 async function createConnection() {
   return await mysql.createConnection({
     host: process.env.MYSQL_HOST,
@@ -50,8 +58,9 @@ async function runQuery(query, obj = {}) {
 async function createTables() {
   const connection = await createConnection();
   try {
-    await connection.query(createTablesQuery);
-    await connection.query(createTableSchedule);
+    await connection.query(createUserTable);
+    await connection.query(createProcedureTable);
+    await connection.query(createScheduleTable);
   } catch (e) {
     throw e;
   } finally {

@@ -152,7 +152,6 @@ function updateSchedule(payload) {
     }
   })
 }
-
 module.exports = {
   get,
   getUserById,
