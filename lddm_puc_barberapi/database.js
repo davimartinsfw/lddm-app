@@ -1,0 +1,71 @@
+const mysql = require("mysql2/promise");
+const { config } = require("dotenv");
+
+config({ path: ".env" });
+
+const createTablesQuery = `
+  CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(80) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    is_admin BOOLEAN,
+    is_barber BOOLEAN,
+    is_clube BOOLEAN,
+    date_birth DATE,
+    phone_number VARCHAR(11) NOT NULL
+  );
+  
+  /*
+  CREATE TABLE IF NOT EXISTS procedure (
+    time DATETIME PRIMARY KEY,
+    type VARCHAR(100) NOT NULL,
+    duration INT NOT NULL,
+    actualPic VARCHAR(255) NOT NULL,
+    cortePic VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    barber_id INT NOT NULL,
+    user_id INT NOT NULL,
+    CONSTRAINT FK_procedures_user FOREIGN KEY (user_id) REFERENCES user(id),
+    CONSTRAINT FK_procedures_barber FOREIGN KEY (barber_id) REFERENCES user(id)
+  ); */
+`;
+
+async function createConnection() {
+  return await mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    database: process.env.MYSQL_DATABASE,
+    password: process.env.MYSQL_PASSWORD,
+    port: 3306,
+    connectTimeout: 30000,
+  });
+}
+
+async function runQuery(query, obj = {}) {
+  const connection = await createConnection();
+  try {
+    connection.prepare(query, obj);
+    const [rows, fields] = await connection.query(query, obj);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createTables() {
+  const connection = await createConnection();
+  try {
+    await connection.query(createTablesQuery);
+  } catch (e) {
+    throw e;
+  } finally {
+    await connection.end();
+  }
+}
+
+module.exports = {
+  createTables,
+  createConnection,
+  runQuery,
+};
