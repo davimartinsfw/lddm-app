@@ -4,28 +4,47 @@ const router = Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    //res = ProcedureController.get();
-    console.log("chegou aqui no get");
-    res.send();
-  } catch (e) {}
+    const response = await ProcedureController.get();
+    res.status(200).send(response);
+  } catch (e) {
+    res.status(500).send(e)
+  }
 });
 
-router.post("/create", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    res = ProcedureController.create(req);
-  } catch (e) {}
+    const response = await ProcedureController.getProcedureById(req.params?.id);
+    res.status(200).send(response);
+  } catch (e) {
+    res.status(500).send(e)
+  }
 });
 
-router.post("/update/:id", async (req, res, next) => {
+router.post("/create/:userId", async (req, res, next) => {
   try {
-    res = ProcedureController.update(req);
-  } catch (e) {}
+    const response = await ProcedureController.create(req);
+    res.status(201).send(response);
+  } catch (e) {
+    res.status(500).send(e)
+  }
 });
 
-router.delete("/delete/:id", async (req, res, next) => {
+router.post("/update/:userId", async (req, res, next) => {
   try {
-    res = ProcedureController.remove(req);
-  } catch (e) {}
+    const response = await ProcedureController.update(req);
+    res.status(200).send(response);
+  } catch (e) {
+    res.status(500).send(e)
+  }
+});
+
+router.delete("/delete/:procedureId/:userId", async (req, res, next) => {
+  try {
+    const response = await ProcedureController.remove(req.params);
+    res.status(200).send(response);
+  } catch (e) {
+    res.status(500).send(e)
+  }
 });
 
 module.exports = {
