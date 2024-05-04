@@ -27,7 +27,7 @@ router.post("/login", async (req, res, next) => {
   try {
     const response = await UserController.login(req.body);
     if (response) {
-      res.sendStatus(200);
+      res.status(200).send(response);
     } else {
       res.sendStatus(401);
     }

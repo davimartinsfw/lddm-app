@@ -26,7 +26,15 @@ const createTablesQuery = `
     price DECIMAL(10,2) NOT NULL,
   ); */
 `;
-
+const createTableSchedule = `CREATE TABLE IF NOT EXISTS schedule(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    barber_id INT NOT NULL,
+    procedure_id INT NOT NULL,
+    horario TIMESTAMP NOT NULL,
+    foto_atual BINARY,
+    foto_corte BINARY
+  );`
 async function createConnection() {
   return await mysql.createConnection({
     host: process.env.MYSQL_HOST,
@@ -53,6 +61,7 @@ async function createTables() {
   const connection = await createConnection();
   try {
     await connection.query(createTablesQuery);
+    await connection.query(createTableSchedule);
   } catch (e) {
     throw e;
   } finally {
