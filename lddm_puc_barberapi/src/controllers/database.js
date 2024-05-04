@@ -15,6 +15,16 @@ const createTablesQuery = `
     date_birth DATE,
     phone_number VARCHAR(11) NOT NULL
   );
+  
+  /*
+  CREATE TABLE IF NOT EXISTS procedure (
+    time DATETIME PRIMARY KEY,
+    type VARCHAR(100) NOT NULL,
+    duration INT NOT NULL,
+    actualPic VARCHAR(255) NOT NULL,
+    cortePic VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+  ); */
 `;
 
 async function createConnection() {

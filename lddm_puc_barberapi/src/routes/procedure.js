@@ -1,11 +1,12 @@
-import { Router } from "express";
-import ProcedureController from "../controllers/procedure";
+const { Router } = require("express");
+const ProcedureController = require("../controllers/procedure");
 const router = Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    res = ProcedureController.get();
-    return res;
+    //res = ProcedureController.get();
+    console.log("chegou aqui no get");
+    res.send();
   } catch (e) {}
 });
 
@@ -26,3 +27,7 @@ router.delete("/delete/:id", async (req, res, next) => {
     res = ProcedureController.remove(req);
   } catch (e) {}
 });
+
+module.exports = {
+  router
+}

@@ -79,65 +79,14 @@ async function remove(params) {
     throw e;
   }
 }
-function createSchedule(payload) {
-  const query = 'INSERT INTO schedule(user_id,barber_id,procedure_id,horario, foto_atual,foto_corte) VALUES (?,?,?,?,?,?)'
-  console.log("entrei")
-  connection.execute(query, [payload.user_id,payload.barber_id,payload.procedure_id,payload.horario, payload.foto_atual? payload.foto_atual : null,payload.foto_corte? payload.foto_corte : null], (err, rows, columns) => {
-    if(err){
-      console.log("Erro: "+err)
-      return
-    }
-  })
-}
 
-function cancelSchedule(payload) {
-  const query = 'DELETE FROM schedule where WHERE id= ?'
-  connection.execute(query, [payload.id], (err, rows, columns) => {
-    if(err){
-      console.log("Erro: "+err)
-      return
-    }
-  })
-}
+function createSchedule(payload) {}
 
-function getAllScheduleUser(payload) {
-  const query = 'SELECT * FROM schedule WHERE user_id= ?'
-  connection.execute(query, [payload.user_id], (err, rows, columns) => {
-    if(err){
-      console.log("Erro: "+err)
-      return
-    }
-  })
-}
-function getAllScheduleBarber(payload) {
-  const query = 'SELECT * FROM schedule WHERE barber_id= ?'
-  connection.execute(query, [payload.user_id], (err, rows, columns) => {
-    if(err){
-      console.log("Erro: "+err)
-      return
-    }
-  })
-}
-function getSchedule(payload) {
-  const query = 'SELECT * FROM schedule WHERE id= ?'
-  connection.execute(query, [payload.id], (err, rows, columns) => {
-    if(err){
-      console.log("Erro: "+err)
-      return
-    }
-  })
-}
+function cancelSchedule(payload) {}
 
-function updadeSchedule(payload) {
-  const previous = connection.query('SELECT * FROM schedule WHERE id = ')
-  const query = 'UPDATE schedule SET user_id = ?, barber_id = ?, procedure_id, horario = ?, foto_atual = ?, foto_corte = ? WHERE id= ?'
-  connection.execute(query, [payload.user_id, payload.barber_id,payload.procedure_id,payload.horario,payload.foto_atual,payload.foto_corte, payload.id], (err, rows, columns) => {
-    if(err){
-      console.log("Erro: "+err)
-      return
-    }
-  })
-}
+function getSchedule(payload) {}
+
+function updadeSchedule(payload) {}
 
 module.exports = {
   get,
