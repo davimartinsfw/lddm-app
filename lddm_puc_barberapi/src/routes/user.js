@@ -47,7 +47,7 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/create", async (req, res, next) => {
   try {
-    const response = UserController.create(req.body);
+    const response = await UserController.create(req.body);
     res.status(201).send(response);
   } catch (e) {
     res.status(500).send(e);
@@ -56,7 +56,7 @@ router.post("/create", async (req, res, next) => {
 
 router.post("/update/:id", async (req, res, next) => {
   try {
-    const response = UserController.update(req);
+    const response = await UserController.update(req);
     res.status(200).send(response);
   } catch (e) {
     res.status(500).send(e);
@@ -65,7 +65,7 @@ router.post("/update/:id", async (req, res, next) => {
 
 router.delete("/delete/:id", async (req, res, next) => {
   try {
-    const response = UserController.remove(req.params);
+    const response = await UserController.remove(req.params);
     res.status(200).send(response);
   } catch (e) {
     res.status(500).send(e);
