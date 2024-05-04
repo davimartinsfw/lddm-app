@@ -14,6 +14,18 @@ async function getUserById(params) {
   return resp[0];
 }
 
+async function getBarbers() {
+  const query = "SELECT name, id FROM user WHERE is_barber = 1";
+  const resp = await runQuery(query);
+  return resp;
+}
+
+async function getAdmins() {
+  const query = "SELECT name, email, phone_number, id FROM user WHERE is_barber = 1";
+  const resp = await runQuery(query);
+  return resp[0];
+}
+
 async function login(payload) {
   const email = payload.email;
   const password = payload.password;
@@ -155,6 +167,8 @@ function updateSchedule(payload) {
 module.exports = {
   get,
   getUserById,
+  getAdmins,
+  getBarbers,
   login,
   create,
   update,

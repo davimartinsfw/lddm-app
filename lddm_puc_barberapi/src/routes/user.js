@@ -1,9 +1,18 @@
-const { Router, response } = require("express");
+const { Router } = require("express");
 const UserController = require("../controllers/user");
 const { config } = require("dotenv");
 
 config({ path: ".env" });
 const router = Router();
+
+router.get("/barbers/", async (req, res, next) => {
+  try {
+    const response = await UserController.getBarbers();
+    res.status(200).send(response);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
 
 router.get("/", async (req, res, next) => {
   try {
