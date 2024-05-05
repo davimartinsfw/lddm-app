@@ -79,6 +79,7 @@ router.get("/schedule/:id", async (req, res, next) => {
   } catch (e) {
     res.status(500).send(e)}
 });
+
 router.get("/schedule/user/:id", async (req, res, next) => {
   try {
     const response = await UserController.getUserSchedule(req.params);
@@ -86,16 +87,18 @@ router.get("/schedule/user/:id", async (req, res, next) => {
   } catch (e) {
     res.status(500).send(e)}
 });
+
 router.get("/barbertimes/", async (req, res, next) => {
   try {
-    const response = await UserController.getAllSchedule();
+    const response = await UserController.getBarberTimes(req.body);
     res.status(200).send(response)
   } catch (e) {
     res.status(500).send(e)}
 });
+
 router.get("/schedule/barber/:id", async (req, res, next) => {
   try {
-    const response = await UserController.getBarberSchedule(req.params);
+    const response = await UserController.getBarberSchedule(req);
     res.status(200).send(response)
   } catch (e) {
     res.status(500).send(e)}

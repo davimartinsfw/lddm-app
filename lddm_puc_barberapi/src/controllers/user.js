@@ -140,18 +140,20 @@ async function cancelSchedule(payload) {
 }
 
 async function getUserSchedule(payload) {
-  const query = 'SELECT * FROM schedule WHERE user_id= ?'
+  const query = 'SELECT * FROM schedule WHERE user_id= ? AND horario > NOW()'
   try {
-    const resp = await runQuery(query, payload.user_id);
+    const resp = await runQuery(query, [payload.user_id]);
     return resp;
   } catch (e) {
     throw e;
   }
 }
+
 async function getBarberSchedule(payload) {
-  const query = 'SELECT * FROM schedule WHERE barber_id= ?'
+  const { params, body } = payload
+  const query = 'SELECT * FROM schedule WHERE barber_id= ? AND DATE(horario) = DATE(?)'
   try {
-    const resp = await runQuery(query, payload.barber_id);
+    const resp = await runQuery(query, [params.barber_id, body.date]);
     return resp;
   } catch (e) {
     throw e;
@@ -161,7 +163,7 @@ async function getBarberSchedule(payload) {
 async function getSchedule(payload) {
   const query = `SELECT * FROM schedule WHERE id = ?`
   try {
-    const resp = await runQuery(query, payload.id);
+    const resp = await runQuery(query, [payload.id]);
     console.log(resp)
     return resp;
   } catch (e) {
@@ -172,10 +174,10 @@ async function getSchedule(payload) {
 async function getBarberTimes(payload) {
   const query = `SELECT s.horario AS horario, p.duration AS procedure_duration
   FROM schedule s
-  JOIN procedures p ON s.procedure_id = p.id where barber_id = ? and horario LIKE ?
+  JOIN procedures p ON s.procedure_id = p.id where barber_id = ? and horario > NOW()
   `
   try {
-    const resp = await runQuery(query, [payload.id, payload.horario+'%']);
+    const resp = await runQuery(query, [payload.id]);
     console.log(resp)
     return resp;
   } catch (e) {
