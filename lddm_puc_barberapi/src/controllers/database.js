@@ -24,14 +24,19 @@ const createProcedureTable = `
     price FLOAT
   );
 `;
-const createScheduleTable = `CREATE TABLE IF NOT EXISTS schedule(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    barber_id INT NOT NULL,
-    procedure_id INT NOT NULL,
-    horario TIMESTAMP NOT NULL,
-    foto_atual BINARY,
-    foto_corte BINARY
+const createScheduleTable = `CREATE TABLE IF NOT EXISTS schedule (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  barber_id INT NOT NULL,
+  procedure_id INT NOT NULL,
+  horario TIMESTAMP NOT NULL,
+  descricao VARCHAR(255),
+  foto_atual BINARY,
+  foto_corte BINARY,
+  FOREIGN KEY (user_id) REFERENCES user(id),
+  FOREIGN KEY (barber_id) REFERENCES user(id),
+  FOREIGN KEY (procedure_id) REFERENCES procedures(id),
+  CONSTRAINT bid_horario UNIQUE (barber_id, horario)
   );`;
 async function createConnection() {
   return await mysql.createConnection({

@@ -110,82 +110,99 @@ async function remove(params) {
     throw e;
   }
 }
-
 async function createSchedule(payload) {
-  const query =
-    "INSERT INTO schedule(user_id,barber_id,procedure_id,horario, foto_atual,foto_corte) VALUES (?,?,?,?,?,?)";
-  console.log("entrei");
+  const query = 'INSERT INTO schedule(user_id,barber_id,procedure_id,horario, foto_atual,foto_corte) VALUES (?,?,?,?,?,?)'
+  const queryObj = {
+    user_id: payload.user_id,
+    barber_id: payload.barber_id,
+    procedure_id: payload.procedure_id,
+    horario: payload.horario,
+    foto_atual: payload.foto_atual,
+    foto_corte: payload.foto_corte,
+    descricao: payload.descricao,
+  };
   try {
-    await runQuery(query, [
-      payload.user_id,
-      payload.barber_id,
-      payload.procedure_id,
-      payload.horario,
-      payload.foto_atual ? payload.foto_atual : null,
-      payload.foto_corte ? payload.foto_corte : null,
-    ]);
+    const resp = await runQuery(query, Object.values(queryObj));
+    return resp;
   } catch (e) {
     throw e;
   }
 }
 
 async function cancelSchedule(payload) {
-  const query = "DELETE FROM schedule where WHERE id= ?";
-
+  const query = 'DELETE FROM schedule where WHERE id= ?'
   try {
-    await runQuery(query, [payload.id]);
+    const resp = await runQuery(query, payload.id);
+    return resp;
   } catch (e) {
     throw e;
   }
 }
 
 async function getUserSchedule(payload) {
-  const query = "SELECT * FROM schedule WHERE user_id= ?";
+  const query = 'SELECT * FROM schedule WHERE user_id= ?'
   try {
-    await runQuery(query, [payload.user_id]);
+    const resp = await runQuery(query, payload.user_id);
+    return resp;
   } catch (e) {
     throw e;
   }
 }
-
 async function getBarberSchedule(payload) {
-  const query = "SELECT * FROM schedule WHERE barber_id= ?";
-
+  const query = 'SELECT * FROM schedule WHERE barber_id= ?'
   try {
-    await runQuery(query, [payload.barber_id]);
+    const resp = await runQuery(query, payload.barber_id);
+    return resp;
   } catch (e) {
     throw e;
   }
 }
 
 async function getSchedule(payload) {
-  const query = "SELECT * FROM schedule WHERE id= ?";
+  const query = `SELECT * FROM schedule WHERE id = ?`
   try {
-    await runQuery(query, [payload.id]);
+    const resp = await runQuery(query, payload.id);
+    console.log(resp)
+    return resp;
+  } catch (e) {
+    throw e;
+  }
+}
+//Requisicao de horario inicio + duracao para calendario
+async function getBarberTimes(payload) {
+  const query = `SELECT s.horario AS horario, p.duration AS procedure_duration
+  FROM schedule s
+  JOIN procedures p ON s.procedure_id = p.id where barber_id = ? and horario LIKE ?
+  `
+  try {
+    const resp = await runQuery(query, [payload.barber_id, payload.horario+'%']);
+    console.log(resp)
+    return resp;
   } catch (e) {
     throw e;
   }
 }
 
 async function updateSchedule(payload) {
-  const query =
-    "UPDATE schedule SET user_id = ?, barber_id = ?, procedure_id, horario = ?, foto_atual = ?, foto_corte = ? WHERE id= ?";
-
+  const query = 'UPDATE schedule SET user_id = ?, barber_id = ?, procedure_id = ?, horario = ?, foto_atual = ?, foto_corte = ?, descricao = ? WHERE id = ?'
+  const queryObj = {
+    user_id: payload.user_id,
+    barber_id: payload.barber_id,
+    procedure_id: payload.procedure_id,
+    horario: payload.horario,
+    foto_atual: payload.foto_atual,
+    foto_corte: payload.foto_corte,
+    descricao: payload.descricao,
+    id: payload.id
+  };
   try {
-    await runQuery(query, [
-      payload.user_id,
-      payload.barber_id,
-      payload.procedure_id,
-      payload.horario,
-      payload.foto_atual,
-      payload.foto_corte,
-      payload.id,
-    ]);
+    const resp = await runQuery(query, Object.values(queryObj));
+    console.log(resp)
+    return resp;
   } catch (e) {
     throw e;
   }
 }
-
 module.exports = {
   get,
   getUserById,

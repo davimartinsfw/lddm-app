@@ -79,16 +79,21 @@ router.get("/schedule/:id", async (req, res, next) => {
   } catch (e) {
     res.status(500).send(e)}
 });
-
-router.get("/schedule/get-user/:user_id", async (req, res, next) => {
+router.get("/schedule/user/:id", async (req, res, next) => {
   try {
     const response = await UserController.getUserSchedule(req.params);
     res.status(200).send(response)
   } catch (e) {
     res.status(500).send(e)}
 });
-
-router.get("/schedule/get-barber/:barber_id", async (req, res, next) => {
+router.get("/barbertimes/", async (req, res, next) => {
+  try {
+    const response = await UserController.getAllSchedule();
+    res.status(200).send(response)
+  } catch (e) {
+    res.status(500).send(e)}
+});
+router.get("/schedule/barber/:id", async (req, res, next) => {
   try {
     const response = await UserController.getBarberSchedule(req.params);
     res.status(200).send(response)
