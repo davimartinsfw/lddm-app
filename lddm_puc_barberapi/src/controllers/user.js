@@ -111,7 +111,8 @@ async function remove(params) {
   }
 }
 async function createSchedule(payload) {
-  const query = 'INSERT INTO schedule(user_id,barber_id,procedure_id,horario, foto_atual,foto_corte) VALUES (?,?,?,?,?,?)'
+  const query =
+    "INSERT INTO schedule(user_id,barber_id,procedure_id,horario, foto_atual,foto_corte) VALUES (?,?,?,?,?,?)";
   const queryObj = {
     user_id: payload.user_id,
     barber_id: payload.barber_id,
@@ -130,7 +131,7 @@ async function createSchedule(payload) {
 }
 
 async function cancelSchedule(payload) {
-  const query = 'DELETE FROM schedule where WHERE id= ?'
+  const query = "DELETE FROM schedule where WHERE id= ?";
   try {
     const resp = await runQuery(query, payload.id);
     return resp;
@@ -140,7 +141,7 @@ async function cancelSchedule(payload) {
 }
 
 async function getUserSchedule(payload) {
-  const query = 'SELECT * FROM schedule WHERE user_id= ? AND horario > NOW()'
+  const query = "SELECT * FROM schedule WHERE user_id= ? AND horario > NOW()";
   try {
     const resp = await runQuery(query, [payload.user_id]);
     return resp;
@@ -150,8 +151,28 @@ async function getUserSchedule(payload) {
 }
 
 async function getBarberSchedule(payload) {
-  const { params, body } = payload
-  const query = 'SELECT * FROM schedule WHERE barber_id= ? AND DATE(horario) = DATE(?)'
+  const { params, body } = payload;
+  const query = `
+  SELECT
+    s.horario AS horario,
+    s.descricao AS descricao,
+    p.type AS tipo,
+    p.duration AS duration,
+    u.name AS user_name,
+    u.email AS user_email,
+    u.phone_number AS user_phone,
+    u.id AS user_id,
+    b.name AS barber_name,
+    b.id AS barber_id
+  FROM
+    schedule AS s
+  JOIN user AS u ON s.user_id = u.id
+  JOIN user AS b ON s.user_id = b.id
+  JOIN procedures AS p ON p.id = s.procedure_id
+  WHERE
+    barber_id = ?
+    AND DATE(horario) = DATE(?);
+    `;
   try {
     const resp = await runQuery(query, [params.barber_id, body.date]);
     return resp;
@@ -161,10 +182,10 @@ async function getBarberSchedule(payload) {
 }
 
 async function getSchedule(payload) {
-  const query = `SELECT * FROM schedule WHERE id = ?`
+  const query = `SELECT * FROM schedule WHERE id = ?`;
   try {
     const resp = await runQuery(query, [payload.id]);
-    console.log(resp)
+    console.log(resp);
     return resp;
   } catch (e) {
     throw e;
@@ -175,10 +196,10 @@ async function getBarberTimes(payload) {
   const query = `SELECT s.horario AS horario, p.duration AS procedure_duration
   FROM schedule s
   JOIN procedures p ON s.procedure_id = p.id where barber_id = ? and horario > NOW()
-  `
+  `;
   try {
     const resp = await runQuery(query, [payload.id]);
-    console.log(resp)
+    console.log(resp);
     return resp;
   } catch (e) {
     throw e;
@@ -186,7 +207,8 @@ async function getBarberTimes(payload) {
 }
 
 async function updateSchedule(payload) {
-  const query = 'UPDATE schedule SET user_id = ?, barber_id = ?, procedure_id = ?, horario = ?, foto_atual = ?, foto_corte = ?, descricao = ? WHERE id = ?'
+  const query =
+    "UPDATE schedule SET user_id = ?, barber_id = ?, procedure_id = ?, horario = ?, foto_atual = ?, foto_corte = ?, descricao = ? WHERE id = ?";
   const queryObj = {
     user_id: payload.user_id,
     barber_id: payload.barber_id,
@@ -195,11 +217,11 @@ async function updateSchedule(payload) {
     foto_atual: payload.foto_atual,
     foto_corte: payload.foto_corte,
     descricao: payload.descricao,
-    id: payload.id
+    id: payload.id,
   };
   try {
     const resp = await runQuery(query, Object.values(queryObj));
-    console.log(resp)
+    console.log(resp);
     return resp;
   } catch (e) {
     throw e;
@@ -220,5 +242,5 @@ module.exports = {
   getBarberSchedule,
   getSchedule,
   updateSchedule,
-  getBarberTimes
+  getBarberTimes,
 };
