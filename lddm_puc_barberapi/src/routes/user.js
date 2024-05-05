@@ -73,21 +73,28 @@ router.delete("/delete/:id", async (req, res, next) => {
 });
 router.get("/schedule/:id", async (req, res, next) => {
   try {
-    const response = await UserController.getSchedule();
+    const response = await UserController.getSchedule(req.params);
     res.status(200).send(response)
   } catch (e) {
     res.status(500).send(e)}
 });
-router.get("/uschedule/:id", async (req, res, next) => {
+router.get("/schedule/user/:id", async (req, res, next) => {
   try {
-    const response = await UserController.getAllSchedule();
+    const response = await UserController.getUserSchedule(req.params);
     res.status(200).send(response)
   } catch (e) {
     res.status(500).send(e)}
 });
-router.get("/bschedule/:id", async (req, res, next) => {
+router.get("/barbertimes/", async (req, res, next) => {
   try {
-    const response = await UserController.getAllScheduleBarber();
+    const response = await UserController.getBarberTimes(req.body);
+    res.status(200).send(response)
+  } catch (e) {
+    res.status(500).send(e)}
+});
+router.get("/schedule/barber/:id", async (req, res, next) => {
+  try {
+    const response = await UserController.getBarberSchedule(req.params);
     res.status(200).send(response)
   } catch (e) {
     res.status(500).send(e)}
