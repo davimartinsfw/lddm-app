@@ -218,4 +218,5 @@ module.exports = {
   getBarberSchedule,
   getSchedule,
   updateSchedule,
+  getBarberTimes
 };
