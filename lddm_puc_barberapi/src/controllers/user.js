@@ -175,7 +175,7 @@ async function getBarberTimes(payload) {
   JOIN procedures p ON s.procedure_id = p.id where barber_id = ? and horario LIKE ?
   `
   try {
-    const resp = await runQuery(query, [payload.barber_id, payload.horario+'%']);
+    const resp = await runQuery(query, [payload.id, payload.horario+'%']);
     console.log(resp)
     return resp;
   } catch (e) {
