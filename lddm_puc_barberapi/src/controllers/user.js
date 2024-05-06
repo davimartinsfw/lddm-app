@@ -83,7 +83,6 @@ async function update({ params, body }) {
   const queryObj = {
     name: user.name,
     email: user.email,
-    password: user.password,
     is_admin: user.is_admin,
     is_barber: user.is_barber,
     is_clube: user.is_clube,
@@ -92,7 +91,7 @@ async function update({ params, body }) {
     id: params.id,
   };
   const query =
-    "UPDATE user SET name = ?, email = ?, password = ?, is_admin = ?, is_barber = ?, is_clube = ?, date_birth = ?, phone_number = ? WHERE id = ?";
+    "UPDATE user SET name = ?, email = ?, is_admin = ?, is_barber = ?, is_clube = ?, date_birth = ?, phone_number = ? WHERE id = ?";
   try {
     const resp = await runQuery(query, Object.values(queryObj));
     return resp;
