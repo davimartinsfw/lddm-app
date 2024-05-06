@@ -1,22 +1,35 @@
 import 'package:flutter/cupertino.dart';
+import 'package:lddm_puc_barberapp/Models/Schedule/Schedule.dart';
+import '../Models/Procedure/Barber.dart';
+import '../Models/Procedure/Procedure.dart';
 
 class ScheduleController extends ChangeNotifier {
+  late List<Barber> barberList;
+  late List<Procedure> procedureList;
+  DateTime focusedDate = DateTime.now();
+  late Schedule actualSchedule =
+      Schedule(userId: null, barberId: null, procedureId: null, horario: null);
+
   bool shouldShowProcedure = false;
   bool shouldShowProfessional = false;
   bool shouldShowCalendar = false;
 
-  String? professional = null;
-  String? procedure = null;
-  DateTime? time = null;
+  void resetSchedule() {
+    actualSchedule = Schedule(
+        userId: null, barberId: null, procedureId: null, horario: null);
+    focusedDate = DateTime.now();
+  }
 
+  void initializeBarberList(List<Barber> list) {
+    barberList = list;
+  }
 
-  void disposeSchedule() {
-    professional = null;
-    procedure = null;
-    time = null;
-    shouldShowProcedure = false;
-    shouldShowProfessional = false;
-    shouldShowCalendar = false;
+  void initializeProcedureList(List<Procedure> list) {
+    procedureList = list;
+  }
+
+  void updateFocusedDay(DateTime newDate) {
+    focusedDate = newDate;
     notifyListeners();
   }
 
@@ -35,18 +48,18 @@ class ScheduleController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProfessional(String name) {
-    professional = name;
+  void updateProfessional(int id) {
+    actualSchedule.barberId = id;
     notifyListeners();
   }
 
-  void updateProcedure(String name) {
-    procedure = name;
+  void updateProcedure(int id) {
+    actualSchedule.procedureId = id;
     notifyListeners();
   }
 
   void updateTime(DateTime newTime) {
-    time = newTime;
+    actualSchedule.horario = newTime;
     //notifyListeners();
   }
 }

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Common/MonthsInPortuguese.dart';
 import 'package:lddm_puc_barberapp/Components/Common/RoundedButton.dart';
 import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
+import 'package:lddm_puc_barberapp/Controllers/UserController.dart';
 import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
+import 'package:lddm_puc_barberapp/services/ScheduleService.dart';
 import 'package:provider/provider.dart';
 import '../Common/NavBar.dart';
 import '../Common/PageHeader.dart';
@@ -20,6 +22,8 @@ class ConfirmScheduleView extends StatefulWidget {
 class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
   late ScheduleController scheduleController;
   late RouteController routeController;
+  late UserController userController;
+  ScheduleService scheduleService = ScheduleService();
 
   @override
   void initState() {
@@ -27,12 +31,13 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
 
     scheduleController = context.read<ScheduleController>();
     routeController = context.read<RouteController>();
+    userController = context.read<UserController>();
   }
 
   Widget renderScheduleBox() {
-    if (scheduleController.procedure == null ||
-        scheduleController.professional == null ||
-        scheduleController.time == null) {
+    if (scheduleController.actualSchedule.procedureId == null ||
+        scheduleController.actualSchedule.barberId == null ||
+        scheduleController.actualSchedule.horario == null) {
       return Container();
     }
 
@@ -55,11 +60,13 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
               child: Center(
                 child: Column(
                   children: [
-                    Text(scheduleController.time!.day.toString(),
+                    Text(
+                        scheduleController.actualSchedule.horario!.day
+                            .toString(),
                         style: Util.fontStyleSB(20, Util.PrimaryColor)),
                     Text(
-                        MonthsInPortuguese()
-                            .witchDay(scheduleController.time!.weekday),
+                        MonthsInPortuguese().witchDay(
+                            scheduleController.actualSchedule.horario!.weekday),
                         style: Util.fontStyleSB(16, Util.PrimaryColor)),
                   ],
                 ),
@@ -75,7 +82,11 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
                       style: Util.fontStyle(),
                     ),
                     Text(
-                      scheduleController.procedure!,
+                      scheduleController.procedureList
+                          .firstWhere((element) =>
+                              element.id ==
+                              scheduleController.actualSchedule.procedureId)
+                          .name,
                       style: Util.fontStyleSB(),
                     )
                   ],
@@ -88,7 +99,11 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
                       style: Util.fontStyle(),
                     ),
                     Text(
-                      scheduleController.professional!,
+                      scheduleController.barberList
+                          .firstWhere((element) =>
+                              element.id ==
+                              scheduleController.actualSchedule.barberId)
+                          .name,
                       style: Util.fontStyleSB(),
                     )
                   ],
@@ -98,12 +113,12 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
                   children: [
                     Text('Dia ', style: Util.fontStyle()),
                     Text(
-                      "${scheduleController.time!.day.toString()} de ${MonthsInPortuguese().witchMonth(scheduleController.time!.month)}",
+                      "${scheduleController.actualSchedule.horario!.day.toString()} de ${MonthsInPortuguese().witchMonth(scheduleController.actualSchedule.horario!.month)}",
                       style: Util.fontStyleSB(15, Util.SecondaryColor),
                     ),
                     Text(' às ', style: Util.fontStyle()),
                     Text(
-                      "${scheduleController.time!.hour.toString()}:${scheduleController.time!.minute.toString()}",
+                      "${add0(scheduleController.actualSchedule.horario!.hour)}:${add0(scheduleController.actualSchedule.horario!.minute)}",
                       style: Util.fontStyleSB(15, Util.SecondaryColor),
                     )
                   ],
@@ -114,6 +129,10 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
         ),
       ),
     );
+  }
+
+  String add0(int i) {
+    return i < 10 ? '0$i' : i.toString();
   }
 
   @override
@@ -209,8 +228,16 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
               width: Util.getWidth(0.62),
               child: RoundedButton(
                   text: 'Confirmar agendamento',
-                  callBackOnPressed: () {
-                    routeController.softPush(AppRoutes.SCHEDULEFINISHED);
+                  callBackOnPressed: () async {
+                    scheduleController.actualSchedule.userId =
+                        userController.userProfile.id;
+                    final status = await scheduleService
+                        .createSchedule(scheduleController.actualSchedule);
+                    scheduleController.dispose();
+
+                    if (status) {
+                      routeController.softPush(AppRoutes.SCHEDULEFINISHED);
+                    }
                   }))
         ],
       )),

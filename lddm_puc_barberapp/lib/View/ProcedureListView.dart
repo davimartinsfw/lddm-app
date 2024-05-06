@@ -11,11 +11,7 @@ import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
 import 'package:lddm_puc_barberapp/Controllers/ScheduleController.dart';
 import 'package:lddm_puc_barberapp/Models/Procedure/Barber.dart';
 import 'package:lddm_puc_barberapp/Models/Procedure/Procedure.dart';
-import 'package:lddm_puc_barberapp/data/procedureMock.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
-
-import '../data/barbersMock.dart';
 
 class ProcedureListView extends StatefulWidget {
   const ProcedureListView({super.key});
@@ -25,13 +21,9 @@ class ProcedureListView extends StatefulWidget {
 }
 
 class _ProcedureListViewState extends State<ProcedureListView> {
-  int _counter = 0;
   late RouteController routeController;
   late NavBarController navBarController;
   late ScheduleController scheduleController;
-
-  List<Procedure> p = MOCK_PROCEDURE;
-  List<Barber> b = MOCK_BARBER;
 
   @override
   void initState() {
@@ -54,14 +46,34 @@ class _ProcedureListViewState extends State<ProcedureListView> {
     }
   }
 
+  List<Widget> renderProcedureList() {
+    List<Widget> list = [];
+
+    scheduleController.procedureList.forEach((element) {
+      list.add(renderBox(element));
+    });
+
+    return list;
+  }
+
+  List<Widget> renderBarberList() {
+    List<Widget> list = [];
+
+    scheduleController.barberList.forEach((element) {
+      list.add(renderBarber(element));
+    });
+
+    return list;
+  }
+
   Widget renderBox(Procedure p) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
         onTap: () {
-          scheduleController.updateProcedure(p.name);
+          scheduleController.updateProcedure(p.id);
           scheduleController.updateProcedureShow(false);
-          if (scheduleController.professional == null) {
+          if (scheduleController.actualSchedule.barberId == null) {
             scheduleController.updateProfessionalShow(true);
             return;
           }
@@ -79,7 +91,7 @@ class _ProcedureListViewState extends State<ProcedureListView> {
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
         onTap: () {
-          scheduleController.updateProfessional(p.name);
+          scheduleController.updateProfessional(p.id);
           scheduleController.updateProfessionalShow(false);
         },
         child: BarberBox(
@@ -115,13 +127,7 @@ class _ProcedureListViewState extends State<ProcedureListView> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
             crossAxisCount: 2,
-            children: [
-              renderBox(p[0]),
-              renderBox(p[1]),
-              renderBox(p[2]),
-              renderBox(p[3]),
-              renderBox(p[4]),
-            ],
+            children: renderProcedureList(),
           ),
         ),
       ],
@@ -152,12 +158,7 @@ class _ProcedureListViewState extends State<ProcedureListView> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
             crossAxisCount: 2,
-            children: [
-              renderBarber(b[0]),
-              renderBarber(b[1]),
-              renderBarber(b[2]),
-              renderBarber(b[3]),
-            ],
+            children: renderBarberList(),
           ),
         ),
       ],

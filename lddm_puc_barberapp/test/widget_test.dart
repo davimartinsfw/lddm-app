@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
 import 'package:lddm_puc_barberapp/initializers/AppWidget.dart';
 
 import 'package:lddm_puc_barberapp/main.dart';
@@ -14,7 +15,7 @@ import 'package:lddm_puc_barberapp/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const NordusApp());
+    await tester.pumpWidget(NordusApp(AppRoutes.LOGIN));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

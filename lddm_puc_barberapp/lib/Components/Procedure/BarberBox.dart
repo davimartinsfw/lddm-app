@@ -41,7 +41,7 @@ class _BarberBoxState extends State<BarberBox> {
         child: SmallRoundedButton(
             txt: "Agendar",
             callBack: () {
-              scheduleController.updateProfessional(widget.barber.name);
+              scheduleController.updateProfessional(widget.barber.id);
               scheduleController.updateProcedureShow(true);
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -66,7 +66,8 @@ class _BarberBoxState extends State<BarberBox> {
           ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: Image.asset(
-                widget.barber.image,
+                widget.barber.image
+                    .replaceAll('%index%', widget.barber.id.toString()),
                 width: 120,
                 height: 120,
                 fit: BoxFit.cover,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Common/Util.dart';
 import 'package:lddm_puc_barberapp/Controllers/ScheduleController.dart';
+import 'package:lddm_puc_barberapp/Controllers/UserController.dart';
 import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,7 @@ class ScheduleFinishedView extends StatefulWidget {
 class _ScheduleFinishedViewState extends State<ScheduleFinishedView> {
   late RouteController routeController;
   late ScheduleController scheduleController;
+  late UserController userController;
 
   @override
   void initState() {
@@ -24,18 +26,18 @@ class _ScheduleFinishedViewState extends State<ScheduleFinishedView> {
 
     routeController = context.read<RouteController>();
     scheduleController = context.read<ScheduleController>();
+    userController = context.read<UserController>();
     redirect();
   }
 
   void redirect() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(milliseconds: 200));
-      scheduleController.disposeSchedule();
+      await Future.delayed(Duration(milliseconds: 400));
+      scheduleController.resetSchedule();
     });
 
-    await Future.delayed(Duration(milliseconds: 700));
+    await userController.initializeUserSchedule();
     routeController.softPush(AppRoutes.HOME);
-    //TODO: SALVA O PROCEDIMENTO E DÁ DISPOSE NA CONTROLLER
   }
 
   @override

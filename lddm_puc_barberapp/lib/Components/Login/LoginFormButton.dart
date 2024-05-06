@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:lddm_puc_barberapp/Controllers/UserController.dart';
+import 'package:lddm_puc_barberapp/services/UserService.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../Common/Util.dart';
 import '../../Controllers/RouteController.dart';
 import '../../Controllers/login/LoginController.dart';
@@ -16,7 +19,9 @@ class LoginFormButton extends StatefulWidget {
 class _LoginFormButtonState extends State<LoginFormButton> {
   late LoginController loginController;
   late RouteController routeController;
+  late UserController userController;
   bool isLoading = false;
+  UserService userService = UserService();
 
   @override
   void initState() {
@@ -24,6 +29,7 @@ class _LoginFormButtonState extends State<LoginFormButton> {
 
     loginController = context.read<LoginController>();
     routeController = context.read<RouteController>();
+    userController = context.read<UserController>();
   }
 
   bool isFormValid() {
@@ -62,14 +68,29 @@ class _LoginFormButtonState extends State<LoginFormButton> {
             isLoading = true;
           });
 
-          await loginController.supabaseSignIn(passwordWrong);
+          final userLogin = {
+            "email": loginController
+                .loginWithEmailTextControllers['email']!.value.text,
+            "password": loginController
+                .loginWithEmailTextControllers['password']!.value.text
+          };
+          final loggedUser = await userService.login(userLogin);
+
+          if (loggedUser == null) {
+            //PARA E MOSTRA ERRO
+            loginController.setShowPasswordError(true);
+            return;
+          }
+
+          final SharedPreferences sharedMemory =
+              await SharedPreferences.getInstance();
+          sharedMemory.setInt('userId', loggedUser.id);
+          userController.initializeUser(loggedUser);
+          routeController.softPush(AppRoutes.HOMELOADING);
 
           setState(() {
             isLoading = false;
           });
-
-          //TODO: ADD VALIDATION BEFORE REDIRECT
-          routeController.softPush(AppRoutes.HOME);
         },
       ),
     );

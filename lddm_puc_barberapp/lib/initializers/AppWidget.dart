@@ -10,7 +10,9 @@ import 'ChangeNotifierProvider.dart';
 late BuildContext globalContext;
 
 class NordusApp extends StatelessWidget {
-  const NordusApp({super.key});
+  final String initialRoute;
+
+  NordusApp(this.initialRoute);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class NordusApp extends StatelessWidget {
           theme: appTheme,
           debugShowCheckedModeBanner: false,
           onGenerateRoute: CustomRouter.generateRoute,
-          initialRoute: AppRoutes.LOGIN,
+          initialRoute: initialRoute,
           //home: const LoginView(),
           supportedLocales: [const Locale('pt', 'BR')]),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import '../../../../Common/Util.dart';
 import '../../Controllers/ButtonReturnController.dart';
@@ -78,6 +79,42 @@ class _CreateAccountFormFieldsState extends State<CreateAccountFormFields> {
                     controller:
                         loginController.loginWithEmailTextControllers['email'],
                     label: 'E-mail'),
+                // callBack: buttonReturnController.updateButton,
+                // shouldShowValidateButton: false,
+                // autoCorrectActive: false,
+              ),
+            ),
+          ],
+        ),
+        Padding(padding: EdgeInsets.only(bottom: 16)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: Util.getWidth(0.91),
+              child: CustomTextField(
+                controller:
+                loginController.loginWithEmailTextControllers['phone']!,
+                field: Field(
+                    // error: (TextEditingController controller) {
+                    //   final bool emailValid = RegExp(r'[0-9]')
+                    //       .hasMatch(controller.value.text) && controller.value.text.length;
+                    //
+                    //   if (!emailValid && controller.value.text != "") {
+                    //     return "Celular inválido";
+                    //   }
+                    // },
+                    formatters: [
+                      MaskTextInputFormatter(
+                          mask: '(##) #####-####',
+                          filter: {"#": RegExp(r'[0-9]')},
+                          type: MaskAutoCompletionType.lazy)
+                    ],
+                    hintText: "Celular",
+                    keyboardType: TextInputType.emailAddress,
+                    controller:
+                    loginController.loginWithEmailTextControllers['phone'],
+                    label: 'Celular'),
                 // callBack: buttonReturnController.updateButton,
                 // shouldShowValidateButton: false,
                 // autoCorrectActive: false,

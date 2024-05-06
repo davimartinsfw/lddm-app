@@ -43,14 +43,16 @@ class _ProcedureBoxState extends State<ProcedureBox> {
         Padding(padding: EdgeInsets.only(bottom: 8)),
         Container(
             width: Util.getWidth(0.2),
-            child: SmallRoundedButton(txt: "Agendar", callBack: () {
-                scheduleController.updateProcedure(widget.p.name);
-                scheduleController.updateProfessionalShow(true);
+            child: SmallRoundedButton(
+                txt: "Agendar",
+                callBack: () {
+                  scheduleController.updateProcedure(widget.p.id);
+                  scheduleController.updateProfessionalShow(true);
 
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  routeController.softPush(AppRoutes.PROCEDURELIST);
-                });
-            })),
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    routeController.softPush(AppRoutes.PROCEDURELIST);
+                  });
+                })),
       ],
     );
   }
@@ -80,10 +82,11 @@ class _ProcedureBoxState extends State<ProcedureBox> {
           ),
           Row(
             children: [
-              Text(widget.p.duration + " min",
+              Text("${widget.p.duration} min",
                   style: Util.fontStyle(11, Util.HeaderArrow)),
               Text(" • ", style: Util.fontStyle(11, Util.HeaderArrow)),
-              Text(widget.p.value, style: Util.fontStyle(11, Util.HeaderArrow)),
+              Text('R\$${widget.p.value}',
+                  style: Util.fontStyle(11, Util.HeaderArrow)),
             ],
           ),
           renderButton()

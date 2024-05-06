@@ -15,7 +15,6 @@ class CalendarSelector extends StatefulWidget {
 }
 
 class _CalendarSelectorState extends State<CalendarSelector> {
-  DateTime focused = DateTime.now();
   int index = 0;
   late ScheduleController scheduleController;
   late RouteController routeController;
@@ -28,14 +27,12 @@ class _CalendarSelectorState extends State<CalendarSelector> {
     routeController = context.read<RouteController>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      scheduleController.updateTime(focused);
+      scheduleController.updateTime(scheduleController.focusedDate);
     });
   }
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
-    setState(() {
-      focused = day;
-    });
+    scheduleController.updateFocusedDay(day);
 
     scheduleController.updateTime(day);
   }
@@ -43,7 +40,7 @@ class _CalendarSelectorState extends State<CalendarSelector> {
   Widget renderCalendar() {
     return TableCalendar(
       locale: Localizations.localeOf(context).languageCode,
-      focusedDay: focused,
+      focusedDay: scheduleController.focusedDate,
       firstDay: DateTime.now(),
       lastDay: DateTime.now().add(Duration(days: 7)),
       availableGestures: AvailableGestures.all,
@@ -62,7 +59,8 @@ class _CalendarSelectorState extends State<CalendarSelector> {
             Icons.chevron_right,
             color: Util.HeaderArrow,
           )),
-      selectedDayPredicate: (day) => isSameDay(day, focused),
+      selectedDayPredicate: (day) =>
+          isSameDay(day, scheduleController.focusedDate),
       onDaySelected: _onDaySelected,
       weekendDays: [DateTime.sunday],
       calendarStyle: CalendarStyle(
@@ -91,12 +89,20 @@ class _CalendarSelectorState extends State<CalendarSelector> {
     );
   }
 
+  String add0(int i) {
+    return i < 10 ? '0$i' : i.toString();
+  }
+
   Widget renderComponent(int i) {
     return InkWell(
       onTap: () async {
         setState(() {
           index = i;
         });
+
+        DateTime date = scheduleController.focusedDate;
+        scheduleController.updateTime(DateTime.parse(
+            "${date.year}-${add0(date.month)}-${add0(date.day)} ${TimeCounter().getTime(i)}:00"));
 
         await Future.delayed(Duration(milliseconds: 500));
 
@@ -120,6 +126,8 @@ class _CalendarSelectorState extends State<CalendarSelector> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<ScheduleController>();
+
     return Column(
       children: [
         Padding(

@@ -9,12 +9,15 @@ class EditProfileField extends StatefulWidget {
   final TextEditingController textEditingController;
   final Field field;
   final String name;
+  final Function? callBack;
 
-  const EditProfileField(
-      {super.key,
-      required this.textEditingController,
-      required this.field,
-      required this.name});
+  const EditProfileField({
+    super.key,
+    required this.textEditingController,
+    required this.field,
+    required this.name,
+    this.callBack,
+  });
 
   @override
   State<EditProfileField> createState() => _EditProfileFieldState();
@@ -46,15 +49,22 @@ class _EditProfileFieldState extends State<EditProfileField> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(padding: EdgeInsets.only(bottom: 4), child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(widget.field.label ?? "", style: Util.fontStyle(),),
-          ],
-        ),),
+        Padding(
+          padding: EdgeInsets.only(bottom: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                widget.field.label ?? "",
+                style: Util.fontStyle(),
+              ),
+            ],
+          ),
+        ),
         CustomTextField(
             controller: widget.textEditingController,
             field: widget.field,
+            callBack: widget.callBack,
             customFocusCallback: customFocus,
             customUnfocusCallback: customUnfocus),
       ],

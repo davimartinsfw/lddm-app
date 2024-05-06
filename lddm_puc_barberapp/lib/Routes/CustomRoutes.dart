@@ -1,4 +1,5 @@
 import 'package:lddm_puc_barberapp/View/AboutUsView.dart';
+import 'package:lddm_puc_barberapp/View/HomeLoading.dart';
 import 'package:lddm_puc_barberapp/View/HomePage.dart';
 import 'package:lddm_puc_barberapp/View/Login/CreateAccountFormView.dart';
 import 'package:lddm_puc_barberapp/View/Login/LoginFormView.dart';
@@ -13,6 +14,7 @@ import '../Models/Routes/CustomRoute.dart';
 class CustomRoutes {
   final Map<String, CustomRoute> routes = {
     AppRoutes.HOME: CustomRoute(render: (_) => MyHomePage()),
+    AppRoutes.HOMELOADING: CustomRoute(render: (_) => HomeLoading()),
     AppRoutes.ABOUTUS: CustomRoute(render: (_) => AboutUsView()),
     AppRoutes.PROFILE: CustomRoute(render: (_) => ProfilePage()),
     AppRoutes.PROCEDURELIST: CustomRoute(render: (_) => ProcedureListView()),

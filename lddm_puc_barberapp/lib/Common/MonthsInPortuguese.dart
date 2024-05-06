@@ -14,6 +14,21 @@ class MonthsInPortuguese {
     "Dezembro",
   ];
 
+  List<String> monthsShort = [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Maio",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
+  ];
+
   List<String> days = [
     "Dom",
     "Seg",
@@ -26,6 +41,10 @@ class MonthsInPortuguese {
 
   String witchMonth(int month) {
     return months[month - 1];
+  }
+
+  String witchShortMonth(int month) {
+    return monthsShort[month - 1];
   }
 
   String witchDay(int day) {

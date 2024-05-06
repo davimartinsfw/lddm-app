@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:lddm_puc_barberapp/services/UserService.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../Common/Util.dart';
 import '../../../../Routes/AppRoutes.dart';
 import '../../Controllers/ButtonReturnController.dart';
 import '../../Controllers/RouteController.dart';
 import '../../Controllers/login/LoginController.dart';
+import '../../Models/User/User.dart';
 import '../Common/RoundedButton.dart';
 
 class CreateAccountButton extends StatefulWidget {
@@ -19,6 +22,7 @@ class _CreateAccountButtonState extends State<CreateAccountButton> {
   late ButtonReturnController buttonReturnController;
   late RouteController routeController;
   bool isLoading = false;
+  UserService userService = UserService();
 
   @override
   void initState() {
@@ -44,19 +48,37 @@ class _CreateAccountButtonState extends State<CreateAccountButton> {
             isLoading = true;
           });
 
-          await loginController.supabaseSignUp();
+          final userEncoded = {
+            "name": loginController
+                .loginWithEmailTextControllers['name']!.value.text,
+            "email": loginController
+                .loginWithEmailTextControllers['email']!.value.text,
+            "phone_number": loginController
+                .loginWithEmailTextControllers['phone']!.value.text
+                .replaceAll("(", "")
+                .replaceAll(")", "")
+                .replaceAll("-", "")
+                .replaceAll(" ", "")
+                .trim(),
+            "password": loginController
+                .loginWithEmailTextControllers['password']!.value.text,
+          };
+
+          final User? user = await userService.postUser(userEncoded);
+
+          if (user == null) {
+            //MOSTRA ERRO NA TELA
+            return;
+          }
 
           setState(() {
             isLoading = false;
           });
 
-          routeController.softPush(AppRoutes.HOME);
-
-          // Timer(Duration(seconds: 1), () {
-          //   Navigator.pushNamed(context, AppRoutes.LOADING, arguments: model);
-          // });
-          //
-          // loginController.updateUserSignedWithEmail();
+          final SharedPreferences sharedMemory =
+              await SharedPreferences.getInstance();
+          sharedMemory.setInt('userId', user.id);
+          routeController.softPush(AppRoutes.HOMELOADING);
         },
       ),
     );

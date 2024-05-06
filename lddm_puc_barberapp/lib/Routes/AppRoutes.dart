@@ -10,4 +10,5 @@ class AppRoutes {
   static const LOGINFORM = '/login-form';
   static const CREATEACCOUNTFORM = '/login-create-account';
   static const ABOUTUS = '/about-us';
+  static const HOMELOADING = '/home-loading';
 }

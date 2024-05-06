@@ -21,6 +21,7 @@ dependencies:
   dotted_border: ^2.1.0
   flutter_fgbg: ^0.3.0
   shared_preferences: ^2.2.2
+  http: ^1.2.0
   flutter_localizations:
     sdk: flutter
 

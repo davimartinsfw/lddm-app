@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Common/HomeHeader.dart';
 import 'package:lddm_puc_barberapp/Common/NavBar.dart';
-import 'package:lddm_puc_barberapp/Common/Util.dart';
-import 'package:lddm_puc_barberapp/Components/Common/CustomTextField.dart';
-import 'package:lddm_puc_barberapp/Components/Common/RoundedButton.dart';
 import 'package:lddm_puc_barberapp/Components/Home/BarberCarousel.dart';
+import 'package:lddm_puc_barberapp/Components/Home/NextSchedule.dart';
 import 'package:lddm_puc_barberapp/Components/Home/ProcedureCarousel.dart';
-import 'package:lddm_puc_barberapp/Components/Procedure/ProcedureBox.dart';
 import 'package:lddm_puc_barberapp/Controllers/NavBarController.dart';
 import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
-import 'package:lddm_puc_barberapp/Models/Procedure/Procedure.dart';
-import 'package:lddm_puc_barberapp/Models/Profile/Field.dart';
-import 'package:lddm_puc_barberapp/Models/Profile/ProfileField.dart';
 import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
 import 'package:lddm_puc_barberapp/initializers/AppWidget.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                NextSchedule(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
                   child: InkWell(
@@ -60,10 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Image.asset('assets/img/clube-teste-1.png')),
                   ),
                 ),
-                //Padding(padding: EdgeInsets.only(top: 20)),
                 ProcedureCarousel(),
+                BarberCarousel(),
                 Padding(padding: EdgeInsets.only(top: 20)),
-                BarberCarousel()
               ],
             ),
           ),

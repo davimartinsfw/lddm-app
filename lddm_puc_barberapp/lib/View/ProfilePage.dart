@@ -8,11 +8,14 @@ import 'package:lddm_puc_barberapp/Common/Util.dart';
 import 'package:lddm_puc_barberapp/Components/Common/CustomTextField.dart';
 import 'package:lddm_puc_barberapp/Components/Common/RoundedButton.dart';
 import 'package:lddm_puc_barberapp/Components/Profile/EditProfileField.dart';
+import 'package:lddm_puc_barberapp/Controllers/ButtonReturnController.dart';
 import 'package:lddm_puc_barberapp/Controllers/EditProfileController.dart';
 import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
+import 'package:lddm_puc_barberapp/Controllers/UserController.dart';
 import 'package:lddm_puc_barberapp/Models/Profile/Field.dart';
 import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,6 +27,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late EditProfileController controller;
   late RouteController routeController;
+  late UserController userController;
+  late ButtonReturnController buttonReturnController;
 
   @override
   void initState() {
@@ -31,6 +36,26 @@ class _ProfilePageState extends State<ProfilePage> {
 
     controller = context.read<EditProfileController>();
     routeController = context.read<RouteController>();
+    userController = context.read<UserController>();
+    buttonReturnController = context.read<ButtonReturnController>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initializeFields();
+    });
+  }
+
+  void initializeFields() {
+    final controllers = controller.textControllers;
+    final fields = controller.mockProfile;
+
+    controllers[fields[0].controllerName]!.text =
+        userController.userProfile.name;
+    controllers[fields[1].controllerName]!.text =
+        userController.userProfile.email;
+    controllers[fields[2].controllerName]!.text =
+        formatCellphone(userController.userProfile.cellphone);
+
+    setState(() {});
   }
 
   Widget renderField(
@@ -41,8 +66,25 @@ class _ProfilePageState extends State<ProfilePage> {
         textEditingController: controller,
         field: field,
         name: field.label ?? "",
+        callBack: buttonReturnController.updateButton,
       ),
     );
+  }
+
+  String formatCellphone(String cellphone) {
+    if (cellphone.isEmpty) {
+      return '';
+    }
+
+    String newCell =
+        cellphone.replaceAll(')', '').replaceAll('-', '').replaceAll('(', '');
+
+    List<String> broken = newCell.split('');
+    broken.insert(7, '-');
+    broken.insert(2, ') ');
+    broken.insert(0, '(');
+
+    return broken.join('');
   }
 
   Widget renderFieldList() {
@@ -57,8 +99,6 @@ class _ProfilePageState extends State<ProfilePage> {
             fields[1].controllerName),
         renderField(controllers[fields[2].controllerName]!, fields[2],
             fields[2].controllerName),
-        renderField(controllers[fields[3].controllerName]!, fields[3],
-            fields[3].controllerName),
       ],
     );
   }
@@ -84,10 +124,30 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  String add0(int i) {
+    return i < 10 ? '0$i' : i.toString();
+  }
+
+  bool isDisable() {
+    final controllers = controller.textControllers;
+
+    bool condition = (userController.userProfile.name ?? '') ==
+            controllers['name']?.value.text &&
+        (userController.userProfile.email ?? '') ==
+            controllers['email']?.value.text &&
+        formatCellphone(userController.userProfile.cellphone ?? '') ==
+            controllers['cellphone']?.value.text;
+
+    return condition;
+  }
+
   @override
   Widget build(BuildContext context) {
+    context.watch<UserController>();
+    context.watch<EditProfileController>();
+
     return Scaffold(
-      appBar: PageHeader("Seu perfil", routeController, true),
+      appBar: PageHeader("Seu perfil", routeController),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
@@ -98,15 +158,64 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text("Editar Perfil", style: Util.fontStyleSB(20)),
                 Padding(padding: EdgeInsets.only(bottom: 20)),
                 renderFieldList(),
-                Padding(padding: EdgeInsets.only(bottom: 12)),
-                Text(
-                  "Meus Agendamentos",
-                  style: Util.fontStyleSB(20),
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [renderSchedules()],
-                )
+                  children: [
+                    Consumer<ButtonReturnController>(
+                        builder: (context, butonController, child) {
+                      return Container(
+                          width: Util.getWidth(0.4),
+                          child: RoundedButton(
+                              text: "Salvar",
+                              color: Util.SecondaryColor,
+                              isDisabledText: 'Salvar',
+                              isDisabled: isDisable(),
+                              callBackOnPressed: () async {
+                                await userController.updateUser(
+                                    controller.generateUserData(
+                                        userController.userProfile));
+
+                                await userController.reloadUser();
+                              }));
+                    }),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 120)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: Util.getWidth(0.4),
+                        child: RoundedButton(
+                            text: "Sair",
+                            color: Util.TextColor,
+                            textColor: Util.PrimaryColor,
+                            callBackOnPressed: () async {
+                              SharedPreferences sharedMemory =
+                                  await SharedPreferences.getInstance();
+                              await sharedMemory.clear();
+                              routeController.softPush(AppRoutes.LOGIN);
+                            })),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 12)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: Util.getWidth(0.4),
+                        child: RoundedButton(
+                            text: "Excluir Conta",
+                            color: Util.DangerColor,
+                            callBackOnPressed: () async {
+                              userController.deleteUser();
+                              SharedPreferences sharedMemory =
+                                  await SharedPreferences.getInstance();
+                              await sharedMemory.clear();
+                              routeController.softPush(AppRoutes.LOGIN);
+                            })),
+                  ],
+                ),
               ],
             ),
           ),
