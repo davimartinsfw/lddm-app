@@ -143,7 +143,7 @@ async function cancelSchedule(payload) {
 async function getUserSchedule(payload) {
   const query = "SELECT * FROM schedule WHERE user_id= ? AND horario > NOW()";
   try {
-    const resp = await runQuery(query, [payload.user_id]);
+    const resp = await runQuery(query, [payload.id]);
     return resp;
   } catch (e) {
     throw e;
