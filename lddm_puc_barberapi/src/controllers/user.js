@@ -131,7 +131,7 @@ async function createSchedule(payload) {
 }
 
 async function cancelSchedule(payload) {
-  const query = "DELETE FROM schedule where WHERE id= ?";
+  const query = "DELETE FROM schedule WHERE id= ?";
   try {
     const resp = await runQuery(query, payload.id);
     return resp;
