@@ -192,7 +192,7 @@ async function getSchedule(payload) {
 }
 //Requisicao de horario inicio + duracao para calendario
 async function getBarberTimes(payload) {
-  const query = `SELECT s.horario AS horario, p.duration AS procedure_duration
+  const query = `SELECT CONVERT_TZ(s.horario,'+00:00','-03:00') AS horario, p.duration AS procedure_duration
   FROM schedule s
   JOIN procedures p ON s.procedure_id = p.id where barber_id = ? and horario > NOW()
   `;
