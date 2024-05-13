@@ -6,10 +6,12 @@ import 'package:lddm_puc_barberapp/Controllers/ScheduleController.dart';
 import 'package:lddm_puc_barberapp/Controllers/UserController.dart';
 import 'package:lddm_puc_barberapp/Models/Procedure/Barber.dart';
 import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
+import 'package:lddm_puc_barberapp/SqLite/SQLHelper.dart';
 import 'package:lddm_puc_barberapp/services/ProcedureService.dart';
 import 'package:lddm_puc_barberapp/services/UserService.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import '../Models/Procedure/Procedure.dart';
 import '../Models/User/User.dart';
 import '../initializers/AppWidget.dart';
@@ -47,13 +49,33 @@ class _HomeLoadingState extends State<HomeLoading> {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       int? id = sharedPreferences.getInt('userId');
+      String? lastLoad = sharedPreferences.getString('lastUserLoad');
+      SQLHelper.db();
 
       if (id == null) {
         throw Error();
       }
 
+      late User? loadedUser;
       UserService userService = UserService();
-      User? loadedUser = await userService.getUser(id);
+
+      if (lastLoad == null ||
+          DateTime.now().difference(DateTime.parse(lastLoad)).inHours > 24) {
+        loadedUser = await userService.getUser(id);
+        sharedPreferences.setString('lastUserLoad', DateTime.now().toString());
+        SQLHelper.adicionarProduto(
+            id,
+            loadedUser!.name,
+            loadedUser.email,
+            loadedUser.cellphone,
+            loadedUser.birthDate ?? '',
+            loadedUser.isAdmin ?? false,
+            loadedUser.isBarber ?? false,
+            loadedUser.isClube ?? false);
+      } else {
+        final data = await SQLHelper.pegaUser();
+        loadedUser = User.fromJson(data[0]);
+      }
 
       if (loadedUser == null) {
         throw Error();

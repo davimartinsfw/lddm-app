@@ -27,7 +27,25 @@ class User {
         password = json['password'] ?? '',
         cellphone = json['phone_number'],
         birthDate = json['birthDate'],
-        isClube = json['is_clube'],
-        isBarber = json['is_barber'],
-        isAdmin = json['is_admin'];
+        isClube = renderBoolean(json['is_clube']),
+        isBarber = renderBoolean(json['is_barber']),
+        isAdmin = renderBoolean(json['is_admin']);
+
+  static bool? renderBoolean(dynamic b) {
+    if (b == null) {
+      return null;
+    }
+
+    if (b.runtimeType == bool) {
+      return b;
+    }
+
+    if (b == 0) {
+      return false;
+    }
+
+    if (b == 1) {
+      return true;
+    }
+  }
 }
