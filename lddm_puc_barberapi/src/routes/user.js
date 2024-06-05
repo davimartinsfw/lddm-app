@@ -5,6 +5,14 @@ const { config } = require("dotenv");
 config({ path: ".env" });
 const router = Router();
 
+router.get("/schedules/", async (req, res, next) => {
+  try {
+    const response = await UserController.getSchedules();
+    res.status(200).send(response)
+  } catch (e) {
+    res.status(500).send(e)}
+
+});
 router.get("/barbers/", async (req, res, next) => {
   try {
     const response = await UserController.getBarbers();
@@ -78,7 +86,7 @@ router.get("/schedule/:id", async (req, res, next) => {
     res.status(200).send(response)
   } catch (e) {
     res.status(500).send(e)}
-});
+  });
 
 router.get("/schedule/user/:id", async (req, res, next) => {
   try {

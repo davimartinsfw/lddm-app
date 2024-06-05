@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:lddm_puc_barberapp/Models/Schedule/Schedule.dart';
+import 'package:lddm_puc_barberapp/services/ScheduleService.dart';
 import '../Models/Procedure/Barber.dart';
 import '../Models/Procedure/Procedure.dart';
 
 class ScheduleController extends ChangeNotifier {
   late List<Barber> barberList;
   late List<Procedure> procedureList;
+  List<Schedule> barberSchedules = [];
   DateTime focusedDate = DateTime.now();
   late Schedule actualSchedule =
       Schedule(userId: null, barberId: null, procedureId: null, horario: null);
+  late ScheduleService scheduleService = ScheduleService();
 
   bool shouldShowProcedure = false;
   bool shouldShowProfessional = false;
@@ -26,6 +29,11 @@ class ScheduleController extends ChangeNotifier {
 
   void initializeProcedureList(List<Procedure> list) {
     procedureList = list;
+  }
+
+  void initializeBarberSchedules(int barberId)  async{
+    barberSchedules = await scheduleService.getBarberSchedule(barberId);
+    notifyListeners();
   }
 
   void updateFocusedDay(DateTime newDate) {

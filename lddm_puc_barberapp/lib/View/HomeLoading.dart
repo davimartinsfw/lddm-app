@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Controllers/NavBarController.dart';
 import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
@@ -48,7 +49,7 @@ class _HomeLoadingState extends State<HomeLoading> {
     try {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
-      int? id = sharedPreferences.getInt('userId');
+      String id = FirebaseAuth.instance.currentUser!.uid;//sharedPreferences.getInt('userId');
       String? lastLoad = sharedPreferences.getString('lastUserLoad');
       SQLHelper.db();
 
@@ -56,35 +57,35 @@ class _HomeLoadingState extends State<HomeLoading> {
         throw Error();
       }
 
-      late User? loadedUser;
-      UserService userService = UserService();
+      // late User? loadedUser;
+      // UserService userService = UserService();
+      //
+      // if (lastLoad == null ||
+      //     DateTime.now().difference(DateTime.parse(lastLoad)).inHours > 24) {
+      //   loadedUser = await userService.getUser(id);
+      //   sharedPreferences.setString('lastUserLoad', DateTime.now().toString());
+      //   SQLHelper.adicionarProduto(
+      //       id,
+      //       loadedUser!.name,
+      //       loadedUser.email,
+      //       loadedUser.cellphone,
+      //       loadedUser.birthDate ?? '',
+      //       loadedUser.isAdmin ?? false,
+      //       loadedUser.isBarber ?? false,
+      //       loadedUser.isClube ?? false);
+      // } else {
+      //   final data = await SQLHelper.pegaUser();
+      //   loadedUser = User.fromJson(data[0]);
+      // }
+      //
+      // if (loadedUser == null) {
+      //   throw Error();
+      // }
 
-      if (lastLoad == null ||
-          DateTime.now().difference(DateTime.parse(lastLoad)).inHours > 24) {
-        loadedUser = await userService.getUser(id);
-        sharedPreferences.setString('lastUserLoad', DateTime.now().toString());
-        SQLHelper.adicionarProduto(
-            id,
-            loadedUser!.name,
-            loadedUser.email,
-            loadedUser.cellphone,
-            loadedUser.birthDate ?? '',
-            loadedUser.isAdmin ?? false,
-            loadedUser.isBarber ?? false,
-            loadedUser.isClube ?? false);
-      } else {
-        final data = await SQLHelper.pegaUser();
-        loadedUser = User.fromJson(data[0]);
-      }
-
-      if (loadedUser == null) {
-        throw Error();
-      }
-
-      await initializeBarberList();
-      await initializeProcedureList();
-      userController.initializeUser(loadedUser);
-      await userController.initializeUserSchedule();
+      //await initializeBarberList();
+      //await initializeProcedureList();
+      //userController.initializeUser(loadedUser);
+      //await userController.initializeUserSchedule();
 
       routeController.softPush(AppRoutes.HOME);
     } on Exception catch (e) {

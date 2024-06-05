@@ -37,4 +37,20 @@ class ScheduleService {
 
     return scheduleList;
   }
+
+  Future<List<Schedule>> getBarberSchedule(int barberId) async {
+    Uri uri = Uri.parse("$path/barber/$barberId");
+
+    final response = await http.get(uri,
+        headers: {
+          'content-type': 'application/json',
+        });
+
+    final rawResponse = jsonDecode(response.body);
+
+    final List<Schedule> scheduleList =
+    List.from(rawResponse.map((element) => Schedule.fromJson(element)));
+
+    return scheduleList;
+  }
 }

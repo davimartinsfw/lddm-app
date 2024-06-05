@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 async function get() {
   const query =
-    "SELECT id, name, email, phone_number, is_admin, is_clube, is_barber FROM user";
+    "SELECT id, name, email, phone_number, is_admin, is_clube, is_barber, password FROM user";
   const resp = await runQuery(query);
   return resp;
 }
@@ -170,10 +170,10 @@ async function getBarberSchedule(payload) {
   JOIN procedures AS p ON p.id = s.procedure_id
   WHERE
     barber_id = ?
-    AND DATE(horario) = DATE(?);
+    AND DATE(horario) >= NOW();
     `;
   try {
-    const resp = await runQuery(query, [params.barber_id, body.date]);
+    const resp = await runQuery(query, [params.id]);
     return resp;
   } catch (e) {
     throw e;
@@ -184,7 +184,16 @@ async function getSchedule(payload) {
   const query = `SELECT * FROM schedule WHERE id = ?`;
   try {
     const resp = await runQuery(query, [payload.id]);
-    console.log(resp);
+    return resp;
+  } catch (e) {
+    throw e;
+  }
+}
+
+async function getSchedules() {
+  const query = `SELECT * FROM schedule`;
+  try {
+    const resp = await runQuery(query);
     return resp;
   } catch (e) {
     throw e;
@@ -198,7 +207,6 @@ async function getBarberTimes(payload) {
   `;
   try {
     const resp = await runQuery(query, [payload.id]);
-    console.log(resp);
     return resp;
   } catch (e) {
     throw e;
@@ -220,7 +228,6 @@ async function updateSchedule(payload) {
   };
   try {
     const resp = await runQuery(query, Object.values(queryObj));
-    console.log(resp);
     return resp;
   } catch (e) {
     throw e;
@@ -242,4 +249,5 @@ module.exports = {
   getSchedule,
   updateSchedule,
   getBarberTimes,
+  getSchedules
 };

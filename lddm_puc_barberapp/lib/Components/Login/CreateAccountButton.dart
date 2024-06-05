@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/services/UserService.dart';
 import 'package:provider/provider.dart';
@@ -48,36 +50,43 @@ class _CreateAccountButtonState extends State<CreateAccountButton> {
             isLoading = true;
           });
 
-          final userEncoded = {
-            "name": loginController
-                .loginWithEmailTextControllers['name']!.value.text,
-            "email": loginController
-                .loginWithEmailTextControllers['email']!.value.text,
-            "phone_number": loginController
-                .loginWithEmailTextControllers['phone']!.value.text
-                .replaceAll("(", "")
-                .replaceAll(")", "")
-                .replaceAll("-", "")
-                .replaceAll(" ", "")
-                .trim(),
-            "password": loginController
-                .loginWithEmailTextControllers['password']!.value.text,
-          };
+          final user = await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+                  email: loginController
+                      .loginWithEmailTextControllers['email']!.value.text,
+                  password: loginController
+                      .loginWithEmailTextControllers['password']!.value.text);
 
-          final User? user = await userService.postUser(userEncoded);
-
-          if (user == null) {
-            //MOSTRA ERRO NA TELA
-            return;
-          }
+          // final userEncoded = {
+          //   "name": loginController
+          //       .loginWithEmailTextControllers['name']!.value.text,
+          //   "email": loginController
+          //       .loginWithEmailTextControllers['email']!.value.text,
+          //   "phone_number": loginController
+          //       .loginWithEmailTextControllers['phone']!.value.text
+          //       .replaceAll("(", "")
+          //       .replaceAll(")", "")
+          //       .replaceAll("-", "")
+          //       .replaceAll(" ", "")
+          //       .trim(),
+          //   "password": loginController
+          //       .loginWithEmailTextControllers['password']!.value.text,
+          // };
+          //
+          // final User? user = await userService.postUser(userEncoded);
+          //
+          // if (user == null) {
+          //   //MOSTRA ERRO NA TELA
+          //   return;
+          // }
 
           setState(() {
             isLoading = false;
           });
 
-          final SharedPreferences sharedMemory =
-              await SharedPreferences.getInstance();
-          sharedMemory.setInt('userId', user.id);
+          // final SharedPreferences sharedMemory =
+          //     await SharedPreferences.getInstance();
+          // sharedMemory.setInt('userId', user.id);
           routeController.softPush(AppRoutes.HOMELOADING);
         },
       ),

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Common/HomeHeader.dart';
 import 'package:lddm_puc_barberapp/Common/NavBar.dart';
 import 'package:lddm_puc_barberapp/Components/Home/BarberCarousel.dart';
+import 'package:lddm_puc_barberapp/Components/Home/BarberHomeContent.dart';
+import 'package:lddm_puc_barberapp/Components/Home/HomeContent.dart';
 import 'package:lddm_puc_barberapp/Components/Home/NextSchedule.dart';
 import 'package:lddm_puc_barberapp/Components/Home/ProcedureCarousel.dart';
 import 'package:lddm_puc_barberapp/Controllers/NavBarController.dart';
 import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
+import 'package:lddm_puc_barberapp/Controllers/UserController.dart';
 import 'package:lddm_puc_barberapp/Routes/AppRoutes.dart';
 import 'package:lddm_puc_barberapp/initializers/AppWidget.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   late RouteController routeController;
   late NavBarController navBarController;
+  late UserController userController;
 
   @override
   void initState() {
@@ -29,8 +33,20 @@ class _MyHomePageState extends State<MyHomePage> {
     globalContext = context;
     navBarController = context.read<NavBarController>();
     routeController = context.read<RouteController>();
+    userController = context.read<UserController>();
     routeController.initialize(navBarController);
     navBarController.initialize(routeController);
+  }
+
+  Widget renderContent() {
+    if ((userController.userProfile.isBarber != null &&
+        userController.userProfile.isBarber!) ||
+        (userController.userProfile.isAdmin != null &&
+            userController.userProfile.isAdmin!)) {
+        return BarberHomeContent();
+    }
+
+    return HomeContent();
   }
 
   @override
@@ -39,28 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: HomeHeader(),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                NextSchedule(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
-                  child: InkWell(
-                    onTap: () {
-                      routeController.softPush(AppRoutes.ABOUTUS);
-                    },
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.asset('assets/img/clube-teste-1.png')),
-                  ),
-                ),
-                ProcedureCarousel(),
-                BarberCarousel(),
-                Padding(padding: EdgeInsets.only(top: 20)),
-              ],
-            ),
-          ),
+          child: renderContent(),
         ),
       ),
       bottomNavigationBar: NavBar(),
