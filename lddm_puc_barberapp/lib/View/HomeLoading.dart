@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/Controllers/NavBarController.dart';
@@ -56,6 +57,16 @@ class _HomeLoadingState extends State<HomeLoading> {
       if (id == null) {
         throw Error();
       }
+
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      users
+          .add({
+        'full_name': "teste do davi",
+        'company': "etus",
+        'age': 42
+      });
+
 
       // late User? loadedUser;
       // UserService userService = UserService();

@@ -12,8 +12,6 @@ void main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   int? userId = sharedPreferences.getInt('userId');
   await Firebase.initializeApp();
-
-  //await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   await FirebaseAuth.instance.signOut();
 
   String initialRoute = FirebaseAuth.instance.currentUser == null
