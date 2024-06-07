@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lddm_puc_barberapp/services/UserService.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import '../../Controllers/RouteController.dart';
 import '../../Controllers/login/LoginController.dart';
 import '../../Models/User/User.dart';
 import '../Common/RoundedButton.dart';
+import '../../Controllers/UserController.dart';
 
 class CreateAccountButton extends StatefulWidget {
   const CreateAccountButton({Key? key}) : super(key: key);
@@ -23,6 +25,7 @@ class _CreateAccountButtonState extends State<CreateAccountButton> {
   late LoginController loginController;
   late ButtonReturnController buttonReturnController;
   late RouteController routeController;
+  late UserController userController;
   bool isLoading = false;
   UserService userService = UserService();
 
@@ -33,6 +36,7 @@ class _CreateAccountButtonState extends State<CreateAccountButton> {
     loginController = context.read<LoginController>();
     buttonReturnController = context.read<ButtonReturnController>();
     routeController = context.read<RouteController>();
+    userController = context.read<UserController>();
   }
 
   @override
@@ -49,13 +53,16 @@ class _CreateAccountButtonState extends State<CreateAccountButton> {
           setState(() {
             isLoading = true;
           });
-
-          final user = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                  email: loginController
-                      .loginWithEmailTextControllers['email']!.value.text,
-                  password: loginController
-                      .loginWithEmailTextControllers['password']!.value.text);
+          userController.createUser({
+            "email": loginController
+                .loginWithEmailTextControllers['email']!.value.text,
+            "password": loginController
+                .loginWithEmailTextControllers['password']!.value.text,
+            "phone": loginController
+                .loginWithEmailTextControllers['phone']!.value.text,
+            "name": loginController
+                .loginWithEmailTextControllers['name']!.value.text,
+          });
 
           // final userEncoded = {
           //   "name": loginController

@@ -12,7 +12,6 @@ void main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   int? userId = sharedPreferences.getInt('userId');
   await Firebase.initializeApp();
-  await FirebaseAuth.instance.signOut();
 
   String initialRoute = FirebaseAuth.instance.currentUser == null
       ? AppRoutes.LOGIN

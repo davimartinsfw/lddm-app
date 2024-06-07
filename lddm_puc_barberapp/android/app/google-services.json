@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "514603610933",
+    "firebase_url": "https://nordus-app-default-rtdb.firebaseio.com",
+    "project_id": "nordus-app",
+    "storage_bucket": "nordus-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514603610933:android:2cbe4f8d98aac10d81927c",
+        "android_client_info": {
+          "package_name": "br.com.plusdin.plusdin_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQiVWpiv7Fz72Q3fZPVYbyiSPFHkrev_Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514603610933:android:2d77df3057b949db81927c",
+        "android_client_info": {
+          "package_name": "com.example.lddm_puc_barberapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQiVWpiv7Fz72Q3fZPVYbyiSPFHkrev_Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

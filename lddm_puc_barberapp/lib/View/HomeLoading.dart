@@ -50,7 +50,13 @@ class _HomeLoadingState extends State<HomeLoading> {
     try {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
-      String id = FirebaseAuth.instance.currentUser!.uid;//sharedPreferences.getInt('userId');
+
+      if (userController.userAuth == null) {
+        await userController.initializeUser(FirebaseAuth.instance.currentUser);
+      }
+
+      String id =
+          userController.userAuth!.uid; //sharedPreferences.getInt('userId');
       String? lastLoad = sharedPreferences.getString('lastUserLoad');
       SQLHelper.db();
 
@@ -59,14 +65,9 @@ class _HomeLoadingState extends State<HomeLoading> {
       }
 
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
-      users
-          .add({
-        'full_name': "teste do davi",
-        'company': "etus",
-        'age': 42
-      });
-
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+      users.add({'full_name': "teste do davi", 'company': "etus", 'age': 42});
 
       // late User? loadedUser;
       // UserService userService = UserService();

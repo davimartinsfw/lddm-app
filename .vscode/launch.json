@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "lddm_puc_barberapp",
+            "cwd": "lddm_puc_barberapp",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "lddm_puc_barberapp (profile mode)",
+            "cwd": "lddm_puc_barberapp",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "lddm_puc_barberapp (release mode)",
+            "cwd": "lddm_puc_barberapp",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
