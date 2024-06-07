@@ -39,12 +39,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget renderContent() {
-    if ((userController.userProfile.isBarber != null &&
-        userController.userProfile.isBarber!) ||
-        (userController.userProfile.isAdmin != null &&
-            userController.userProfile.isAdmin!)) {
-        return BarberHomeContent();
-    }
+    // if ((userController.userProfile!.isBarber != null &&
+    //     userController.userProfile!.isBarber!) ||
+    //     (userController.userProfile!.isAdmin != null &&
+    //         userController.userProfile!.isAdmin!)) {
+    //     return BarberHomeContent();
+    // }
 
     return HomeContent();
   }

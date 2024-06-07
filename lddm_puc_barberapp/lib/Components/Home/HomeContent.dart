@@ -29,7 +29,7 @@ class _HomeContentState extends State<HomeContent> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          NextSchedule(),
+          //extSchedule(),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
             child: InkWell(
@@ -41,7 +41,7 @@ class _HomeContentState extends State<HomeContent> {
                   child: Image.asset('assets/img/clube-teste-1.png')),
             ),
           ),
-          ProcedureCarousel(),
+          //ProcedureCarousel(),
           BarberCarousel(),
           Padding(padding: EdgeInsets.only(top: 20)),
         ],

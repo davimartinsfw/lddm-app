@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lddm_puc_barberapp/Models/Schedule/Schedule.dart';
 import 'package:lddm_puc_barberapp/services/ScheduleService.dart';
@@ -23,7 +24,17 @@ class ScheduleController extends ChangeNotifier {
     focusedDate = DateTime.now();
   }
 
-  void initializeBarberList(List<Barber> list) {
+  Future<void> initializeBarberList() async {
+    final col = FirebaseFirestore.instance
+        .collection("usuario");
+
+    final query = await col.where("is_barber", isEqualTo: true).get();
+    List<Barber> list = [];
+
+    query.docs.forEach((doc) {
+      list.add(Barber.fromJson(doc.data()));
+    });
+
     barberList = list;
   }
 

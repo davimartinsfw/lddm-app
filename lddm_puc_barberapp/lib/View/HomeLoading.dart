@@ -94,7 +94,7 @@ class _HomeLoadingState extends State<HomeLoading> {
       //   throw Error();
       // }
 
-      //await initializeBarberList();
+      await scheduleController.initializeBarberList();
       //await initializeProcedureList();
       //userController.initializeUser(loadedUser);
       //await userController.initializeUserSchedule();
@@ -117,7 +117,7 @@ class _HomeLoadingState extends State<HomeLoading> {
             24) {
       List<Barber> barbersList = await userService.getBarbers();
 
-      scheduleController.initializeBarberList(barbersList);
+      //scheduleController.initializeBarberList(barbersList);
       sharedPreferences.setString(
           "lastBarberRender", DateTime.now().toString());
 
@@ -131,7 +131,7 @@ class _HomeLoadingState extends State<HomeLoading> {
       List<Barber> barberList =
           List.from(list!.map((e) => Barber.fromJson(jsonDecode(e))));
 
-      scheduleController.initializeBarberList(barberList);
+      //scheduleController.initializeBarberList(barberList);
     }
   }
 

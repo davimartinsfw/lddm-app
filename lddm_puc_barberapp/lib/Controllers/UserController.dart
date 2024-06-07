@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lddm_puc_barberapp/Models/User/User.dart';
 import 'package:lddm_puc_barberapp/services/ScheduleService.dart';
 import 'package:lddm_puc_barberapp/services/UserService.dart';
 
 import '../Models/Schedule/Schedule.dart';
 
 class UserController extends ChangeNotifier {
-  late var userProfile;
+  late UserProfile? userProfile;
   late var userAuth = null;
   late List<Schedule> userSchedule;
   ScheduleService scheduleService = ScheduleService();
@@ -15,10 +16,12 @@ class UserController extends ChangeNotifier {
 
   Future<void> initializeUser(User? user) async {
     userAuth = user;
-    userProfile = await FirebaseFirestore.instance
+    final doc = await FirebaseFirestore.instance
         .collection("usuario")
         .doc(userAuth!.uid)
         .get();
+
+    userProfile = UserProfile.fromJson(doc.data()!);
   }
 
   Future<void> createUser(user) async {
@@ -35,10 +38,12 @@ class UserController extends ChangeNotifier {
         "phone": user["phone"],
         "name": user["name"],
       });
-      userProfile = await FirebaseFirestore.instance
+      final doc = await FirebaseFirestore.instance
           .collection("usuario")
           .doc(userAuth!.uid)
           .get();
+
+      userProfile = UserProfile.fromJson(doc.data()!);
     }
   }
 
@@ -47,10 +52,12 @@ class UserController extends ChangeNotifier {
         .signInWithEmailAndPassword(email: email, password: password);
     userAuth = FirebaseAuth.instance.currentUser;
     if (userAuth != null) {
-      userProfile = await FirebaseFirestore.instance
+      final doc = await FirebaseFirestore.instance
           .collection("usuario")
           .doc(userAuth!.uid)
           .get();
+
+      userProfile = UserProfile.fromJson(doc.data()!);
     }
   }
 
@@ -66,10 +73,12 @@ class UserController extends ChangeNotifier {
         .doc(userAuth.uid)
         .set(changes);
 
-    userProfile = await FirebaseFirestore.instance
+    final doc = await FirebaseFirestore.instance
         .collection("usuario")
-        .doc(userAuth.uid)
+        .doc(userAuth!.uid)
         .get();
+
+    userProfile = UserProfile.fromJson(doc.data()!);
   }
 
   getBarbers() {
@@ -79,7 +88,7 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> initializeUserSchedule() async {
-    userSchedule = await scheduleService.getUserSchedule(userProfile.id);
+    userSchedule = await scheduleService.getUserSchedule(userAuth.uid);
   }
 
   Future<void> deleteUser() async {
@@ -91,7 +100,7 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> reloadUser() async {
-    var u = await userService.getUser(userProfile.id);
+    var u = await userService.getUser(userAuth.uid);
     if (u != null) {
       userProfile = u;
       notifyListeners();

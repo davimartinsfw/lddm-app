@@ -26,7 +26,7 @@ class _BarberHomeContentState extends State<BarberHomeContent> {
   }
 
   void initializeBarberSchedules() async {
-    scheduleController.initializeBarberSchedules(userController.userProfile.id);
+    scheduleController.initializeBarberSchedules(userController.userAuth.uid);
   }
 
   Widget renderList() {

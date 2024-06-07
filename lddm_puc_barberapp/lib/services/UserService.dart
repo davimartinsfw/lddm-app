@@ -6,7 +6,7 @@ import '../Models/Procedure/Barber.dart';
 class UserService {
   final path = 'http://localhost:3000/api/user';
 
-  Future<User?> postUser(Object user) async {
+  Future<UserProfile?> postUser(Object user) async {
     Uri uri = Uri.parse("$path/create");
 
     final body = jsonEncode({"user": user});
@@ -19,10 +19,10 @@ class UserService {
 
     final rawResponse = jsonDecode(response.body);
 
-    return response.statusCode == 201 ? User.fromJson(rawResponse) : null;
+    return response.statusCode == 201 ? UserProfile.fromJson(rawResponse) : null;
   }
 
-  Future<User?> login(Object userLogin) async {
+  Future<UserProfile?> login(Object userLogin) async {
     Uri uri = Uri.parse("$path/login");
 
     final body = jsonEncode(userLogin);
@@ -35,10 +35,10 @@ class UserService {
 
     final rawResponse = jsonDecode(response.body);
 
-    return response.statusCode == 200 ? User.fromJson(rawResponse) : null;
+    return response.statusCode == 200 ? UserProfile.fromJson(rawResponse) : null;
   }
 
-  Future<User?> getUser(int id) async {
+  Future<UserProfile?> getUser(int id) async {
     Uri uri = Uri.parse("$path/$id");
 
     final response = await http.get(uri, headers: {
@@ -47,7 +47,7 @@ class UserService {
 
     final rawResponse = jsonDecode(response.body);
 
-    return response.statusCode == 200 ? User.fromJson(rawResponse) : null;
+    return response.statusCode == 200 ? UserProfile.fromJson(rawResponse) : null;
   }
 
   Future<List<Barber>> getBarbers() async {

@@ -19,7 +19,7 @@ class EditProfileController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> generateUserData(User user) {
+  Map<String, dynamic> generateUserData(UserProfile user) {
     return {
       'user': {
         'phone_number': textControllers['cellphone']!

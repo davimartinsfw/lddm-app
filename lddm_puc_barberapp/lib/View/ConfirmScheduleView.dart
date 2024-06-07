@@ -230,7 +230,7 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
                   text: 'Confirmar agendamento',
                   callBackOnPressed: () async {
                     scheduleController.actualSchedule.userId =
-                        userController.userProfile.id;
+                        userController.userAuth.uid;
                     final status = await scheduleService
                         .createSchedule(scheduleController.actualSchedule);
                     scheduleController.dispose();

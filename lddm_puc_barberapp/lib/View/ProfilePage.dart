@@ -49,11 +49,11 @@ class _ProfilePageState extends State<ProfilePage> {
     final fields = controller.mockProfile;
 
     controllers[fields[0].controllerName]!.text =
-        userController.userProfile.name;
+        userController.userProfile!.name;
     controllers[fields[1].controllerName]!.text =
-        userController.userProfile.email;
+        userController.userProfile!.email;
     controllers[fields[2].controllerName]!.text =
-        formatCellphone(userController.userProfile.cellphone);
+        formatCellphone(userController.userProfile!.cellphone);
 
     setState(() {});
   }
@@ -131,11 +131,11 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isDisable() {
     final controllers = controller.textControllers;
 
-    bool condition = (userController.userProfile.name ?? '') ==
+    bool condition = (userController.userProfile!.name ?? '') ==
             controllers['name']?.value.text &&
-        (userController.userProfile.email ?? '') ==
+        (userController.userProfile!.email ?? '') ==
             controllers['email']?.value.text &&
-        formatCellphone(userController.userProfile.cellphone ?? '') ==
+        formatCellphone(userController.userProfile!.cellphone ?? '') ==
             controllers['cellphone']?.value.text;
 
     return condition;
@@ -173,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               callBackOnPressed: () async {
                                 await userController.updateUser(
                                     controller.generateUserData(
-                                        userController.userProfile));
+                                        userController.userProfile!));
 
                                 await userController.reloadUser();
                               }));

@@ -10,7 +10,7 @@ class Barber {
 });
 
   Barber.fromJson(Map<String, dynamic> json)
-  : id = json['id'],
+  : id = 1,//json['id'],
   name = json['name'],
   image = "assets/img/barber-photo-2.png";
 

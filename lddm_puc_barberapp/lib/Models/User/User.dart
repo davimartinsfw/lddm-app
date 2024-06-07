@@ -1,5 +1,4 @@
-class User {
-  final int id;
+class UserProfile {
   final String name;
   final String email;
   final String password;
@@ -9,9 +8,8 @@ class User {
   final bool? isBarber;
   final bool? isAdmin;
 
-  User(
-      {required this.id,
-      required this.name,
+  UserProfile(
+      {required this.name,
       required this.email,
       required this.password,
       required this.cellphone,
@@ -20,12 +18,11 @@ class User {
       required this.isBarber,
       required this.isAdmin});
 
-  User.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
+  UserProfile.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
         email = json['email'],
         password = json['password'] ?? '',
-        cellphone = json['phone_number'],
+        cellphone = json['phone'],
         birthDate = json['birthDate'],
         isClube = renderBoolean(json['is_clube']),
         isBarber = renderBoolean(json['is_barber']),
