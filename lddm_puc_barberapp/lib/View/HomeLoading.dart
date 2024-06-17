@@ -51,6 +51,10 @@ class _HomeLoadingState extends State<HomeLoading> {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
 
+      if(FirebaseAuth.instance.currentUser == null) {
+        throw Error();
+      }
+
       if (userController.userAuth == null) {
         await userController.initializeUser(FirebaseAuth.instance.currentUser);
       }
@@ -65,9 +69,6 @@ class _HomeLoadingState extends State<HomeLoading> {
       }
 
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      CollectionReference users =
-          FirebaseFirestore.instance.collection('users');
-      users.add({'full_name': "teste do davi", 'company': "etus", 'age': 42});
 
       // late User? loadedUser;
       // UserService userService = UserService();
@@ -95,9 +96,8 @@ class _HomeLoadingState extends State<HomeLoading> {
       // }
 
       await scheduleController.initializeBarberList();
-      //await initializeProcedureList();
-      //userController.initializeUser(loadedUser);
-      //await userController.initializeUserSchedule();
+      await scheduleController.initializeProcedureList();
+      await userController.initializeUserSchedule();
 
       routeController.softPush(AppRoutes.HOME);
     } on Exception catch (e) {
@@ -147,7 +147,7 @@ class _HomeLoadingState extends State<HomeLoading> {
             24) {
       List<Procedure> procedureList = await procedureService.getProcedure();
 
-      scheduleController.initializeProcedureList(procedureList);
+      //scheduleController.initializeProcedureList(procedureList);
       sharedPreferences.setString(
           "lastProcedureRender", DateTime.now().toString());
 
@@ -161,7 +161,7 @@ class _HomeLoadingState extends State<HomeLoading> {
       List<Procedure> procedureList =
           List.from(list!.map((e) => Procedure.fromJson(jsonDecode(e))));
 
-      scheduleController.initializeProcedureList(procedureList);
+      //scheduleController.initializeProcedureList(procedureList);
     }
   }
 

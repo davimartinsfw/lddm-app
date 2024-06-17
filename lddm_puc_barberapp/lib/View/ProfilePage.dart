@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -194,6 +195,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               SharedPreferences sharedMemory =
                                   await SharedPreferences.getInstance();
                               await sharedMemory.clear();
+                              await FirebaseAuth.instance.signOut();
                               routeController.softPush(AppRoutes.LOGIN);
                             })),
                   ],

@@ -11,9 +11,13 @@ import '../Common/SmallRoundedButton.dart';
 class BarberBox extends StatefulWidget {
   final Barber barber;
   final bool shouldShowButton;
+  final int photoId;
 
   const BarberBox(
-      {super.key, required this.barber, this.shouldShowButton = true});
+      {super.key,
+      required this.barber,
+      this.shouldShowButton = true,
+      required this.photoId});
 
   @override
   State<BarberBox> createState() => _BarberBoxState();
@@ -54,7 +58,6 @@ class _BarberBoxState extends State<BarberBox> {
   Widget build(BuildContext context) {
     return Container(
       width: Util.getWidth(0.4),
-      //height: Util.getHeight(0.29),
       margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
           color: Util.PrimaryColor,
@@ -67,7 +70,7 @@ class _BarberBoxState extends State<BarberBox> {
               borderRadius: BorderRadius.circular(100),
               child: Image.asset(
                 widget.barber.image
-                    .replaceAll('%index%', widget.barber.id.toString()),
+                    .replaceAll('%id%', (widget.photoId % 3).toString()),
                 width: 120,
                 height: 120,
                 fit: BoxFit.cover,

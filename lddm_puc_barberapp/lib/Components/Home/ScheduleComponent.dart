@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lddm_puc_barberapp/Controllers/UserController.dart';
 import 'package:provider/provider.dart';
-
 import '../../Common/MonthsInPortuguese.dart';
 import '../../Common/Util.dart';
 import '../../Controllers/ScheduleController.dart';
@@ -17,12 +18,32 @@ class ScheduleComponent extends StatefulWidget {
 
 class _ScheduleComponentState extends State<ScheduleComponent> {
   late ScheduleController scheduleController;
+  late UserController userController;
+  String userName = 'Carregando...';
 
   @override
   void initState() {
     super.initState();
 
     scheduleController = context.read<ScheduleController>();
+    userController = context.read<UserController>();
+
+    fetchUserName();
+  }
+
+  Future<void> fetchUserName() async {
+    DocumentReference<Map<String, dynamic>> userRef = widget.schedule.userId!;
+    DocumentSnapshot<Map<String, dynamic>> docSnapshot = await userRef.get();
+
+    if (docSnapshot.exists) {
+      setState(() {
+        userName = docSnapshot.data()?['name'] ?? 'Não informado';
+      });
+    } else {
+      setState(() {
+        userName = 'Não encontrado';
+      });
+    }
   }
 
   String add0(int i) {
@@ -70,7 +91,7 @@ class _ScheduleComponentState extends State<ScheduleComponent> {
                     Text(
                       scheduleController.procedureList
                           .firstWhere((element) =>
-                              element.id == widget.schedule.procedureId)
+                              element.id == widget.schedule.procedureId?.id)
                           .name,
                       style: Util.fontStyleSB(14),
                     )
@@ -80,14 +101,20 @@ class _ScheduleComponentState extends State<ScheduleComponent> {
                 Row(
                   children: [
                     Text(
-                      'Barbeiro: ',
+                      userController.userProfile!.isBarber != null &&
+                              userController.userProfile!.isBarber!
+                          ? 'Cliente: '
+                          : 'Barbeiro: ',
                       style: Util.fontStyle(14),
                     ),
                     Text(
-                      scheduleController.barberList
-                          .firstWhere((element) =>
-                              element.id == widget.schedule.barberId)
-                          .name,
+                      userController.userProfile!.isBarber != null &&
+                              userController.userProfile!.isBarber!
+                          ? userName
+                          : scheduleController.barberList
+                              .firstWhere((element) =>
+                                  element.id == widget.schedule.barberId?.id)
+                              .name,
                       style: Util.fontStyleSB(14),
                       maxLines: 1,
                     )
@@ -101,12 +128,7 @@ class _ScheduleComponentState extends State<ScheduleComponent> {
                       style: Util.fontStyle(14),
                     ),
                     Text(
-                      scheduleController.procedureList
-                              .firstWhere((element) =>
-                                  element.id == widget.schedule.procedureId)
-                              .duration
-                              .toString() +
-                          ' minutos',
+                      '${scheduleController.procedureList.firstWhere((element) => element.id == widget.schedule.procedureId?.id).duration} minutos',
                       style: Util.fontStyleSB(14),
                       maxLines: 1,
                     )

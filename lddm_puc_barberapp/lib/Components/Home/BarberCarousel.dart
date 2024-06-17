@@ -44,7 +44,7 @@ class _BarberCarouselState extends State<BarberCarousel> {
                 return Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child:
-                      BarberBox(barber: scheduleController.barberList[counter]),
+                      BarberBox(barber: scheduleController.barberList[counter], photoId: counter),
                 );
               }),
         ),

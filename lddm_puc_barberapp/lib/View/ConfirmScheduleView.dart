@@ -1,5 +1,12 @@
+import 'dart:io';
+
+import 'package:camera_camera/camera_camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lddm_puc_barberapp/Common/MonthsInPortuguese.dart';
 import 'package:lddm_puc_barberapp/Components/Common/RoundedButton.dart';
 import 'package:lddm_puc_barberapp/Controllers/RouteController.dart';
@@ -11,6 +18,7 @@ import '../Common/NavBar.dart';
 import '../Common/PageHeader.dart';
 import '../Common/Util.dart';
 import '../Controllers/ScheduleController.dart';
+import 'PreviewPage.dart';
 
 class ConfirmScheduleView extends StatefulWidget {
   const ConfirmScheduleView({super.key});
@@ -24,6 +32,8 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
   late RouteController routeController;
   late UserController userController;
   ScheduleService scheduleService = ScheduleService();
+  final ImagePicker _picker = ImagePicker();
+  bool buttonLoading = false;
 
   @override
   void initState() {
@@ -32,6 +42,54 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
     scheduleController = context.read<ScheduleController>();
     routeController = context.read<RouteController>();
     userController = context.read<UserController>();
+  }
+
+  Future getFileFromGallery() async {
+    XFile? image =
+        await scheduleController.picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      scheduleController.setActualImage(File(image.path));
+    }
+  }
+
+  Widget renderImageSelector(bool b, Function callback) {
+    if (b) {
+      return Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            border: Border.all(color: Util.SecondaryColor)),
+        padding: EdgeInsets.all(50),
+        width: Util.getWidth(0.9),
+        child: Center(
+          child: Image.asset('assets/img/check-circle.png'),
+        ),
+      );
+    }
+
+    return DottedBorder(
+      borderType: BorderType.RRect,
+      strokeWidth: 2,
+      dashPattern: [6],
+      color: Util.SecondaryColor,
+      radius: Radius.circular(16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        child: InkWell(
+          splashColor: Colors.transparent,
+          onTap: () {
+            callback.call();
+          },
+          child: Container(
+            padding: EdgeInsets.all(50),
+            width: Util.getWidth(0.9),
+            child: Center(
+              child: Image.asset('assets/img/image-placeholder.png'),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget renderScheduleBox() {
@@ -85,7 +143,7 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
                       scheduleController.procedureList
                           .firstWhere((element) =>
                               element.id ==
-                              scheduleController.actualSchedule.procedureId)
+                              scheduleController.actualSchedule.procedureId?.id)
                           .name,
                       style: Util.fontStyleSB(),
                     )
@@ -102,7 +160,7 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
                       scheduleController.barberList
                           .firstWhere((element) =>
                               element.id ==
-                              scheduleController.actualSchedule.barberId)
+                              scheduleController.actualSchedule.barberId?.id)
                           .name,
                       style: Util.fontStyleSB(),
                     )
@@ -135,6 +193,11 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
     return i < 10 ? '0$i' : i.toString();
   }
 
+  void onFile(File file) async {
+    scheduleController.setActualPhoto(file);
+    routeController.softPush(AppRoutes.PREVIEWPAGE, file);
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<ScheduleController>();
@@ -142,104 +205,108 @@ class _ConfirmScheduleViewState extends State<ConfirmScheduleView> {
     return Scaffold(
       appBar: PageHeader("Confirmar agendamento", routeController),
       body: SafeArea(
-          child: Column(
-        children: [
-          Padding(
-              padding: EdgeInsets.only(bottom: 0, top: 20, left: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Confirme as informações:", style: Util.fontStyleSB(20)),
-                ],
-              )),
-          renderScheduleBox(),
-          Padding(
-              padding: EdgeInsets.only(bottom: 12, top: 20, left: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Envie uma foto do seu cabelo atual:",
-                          style: Util.fontStyleSB(16)),
-                      Text("(opcional)",
-                          style: Util.fontStyle(10, Util.HeaderArrow)),
-                    ],
-                  ),
-                ],
-              )),
-          DottedBorder(
-            borderType: BorderType.RRect,
-            strokeWidth: 2,
-            dashPattern: [6],
-            color: Util.SecondaryColor,
-            radius: Radius.circular(16),
-            //padding: EdgeInsets.all(6),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-              child: Container(
-                padding: EdgeInsets.all(50),
-                width: Util.getWidth(0.9),
-                child: Center(
-                  child: Image.asset('assets/img/image-placeholder.png'),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-              padding: EdgeInsets.only(bottom: 12, top: 20, left: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          width: Util.getWidth(0.9),
-                          child: Text(
-                              "Agora uma imagem do corte que quer de referência:",
-                              style: Util.fontStyleSB(16))),
-                      Text("(opcional)",
-                          style: Util.fontStyle(10, Util.HeaderArrow)),
-                    ],
-                  ),
-                ],
-              )),
-          DottedBorder(
-            borderType: BorderType.RRect,
-            strokeWidth: 2,
-            color: Util.SecondaryColor,
-            dashPattern: [6],
-            radius: Radius.circular(16),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-              child: Container(
-                padding: EdgeInsets.all(50),
-                width: Util.getWidth(0.9),
-                child: Center(
-                  child: Image.asset('assets/img/image-placeholder.png'),
-                ),
-              ),
-            ),
-          ),
-          Container(
-              margin: EdgeInsets.only(top: 24),
-              width: Util.getWidth(0.62),
-              child: RoundedButton(
-                  text: 'Confirmar agendamento',
-                  callBackOnPressed: () async {
-                    scheduleController.actualSchedule.userId =
-                        userController.userAuth.uid;
-                    final status = await scheduleService
-                        .createSchedule(scheduleController.actualSchedule);
-                    scheduleController.dispose();
+          child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+                padding: EdgeInsets.only(bottom: 0, top: 20, left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("Confirme as informações:",
+                        style: Util.fontStyleSB(20)),
+                  ],
+                )),
+            renderScheduleBox(),
+            Padding(
+                padding: EdgeInsets.only(bottom: 12, top: 20, left: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Envie uma foto do seu cabelo atual:",
+                            style: Util.fontStyleSB(16)),
+                        Text("(opcional)",
+                            style: Util.fontStyle(10, Util.HeaderArrow)),
+                      ],
+                    ),
+                  ],
+                )),
+            renderImageSelector(scheduleController.actualPhoto != null, () {
+              routeController.softPush(AppRoutes.CAMERA, onFile);
+            }),
+            Padding(
+                padding: EdgeInsets.only(bottom: 12, top: 20, left: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            width: Util.getWidth(0.9),
+                            child: Text(
+                                "Agora uma imagem do corte que quer de referência:",
+                                style: Util.fontStyleSB(16))),
+                        Text("(opcional)",
+                            style: Util.fontStyle(10, Util.HeaderArrow)),
+                      ],
+                    ),
+                  ],
+                )),
+            renderImageSelector(
+                scheduleController.actualImage != null, getFileFromGallery),
+            Container(
+                margin: EdgeInsets.only(top: 24, bottom: 32),
+                width: Util.getWidth(0.62),
+                child: RoundedButton(
+                    isLoading: buttonLoading,
+                    text: 'Confirmar agendamento',
+                    callBackOnPressed: () async {
+                      setState(() {
+                        buttonLoading = true;
+                      });
 
-                    if (status) {
+                      if (scheduleController.actualImage != null &&
+                          scheduleController.actualPhoto != null) {
+                        final storage = FirebaseStorage.instance;
+                        final String dateTime =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+                        final String imageRef =
+                            "images/reference/$dateTime.png";
+                        final String photoRef = "images/photo/$dateTime.jpg";
+                        await storage
+                            .ref(imageRef)
+                            .putFile(scheduleController.actualImage!);
+                        await storage
+                            .ref(photoRef)
+                            .putFile(scheduleController.actualPhoto!);
+                        scheduleController.actualSchedule.fotoAtual =
+                            await storage.ref(photoRef).getDownloadURL();
+                        scheduleController.actualSchedule.fotoCorte =
+                            await storage.ref(imageRef).getDownloadURL();
+                      }
+
+                      scheduleController.actualSchedule.userId =
+                          FirebaseFirestore.instance
+                              .collection('usuario')
+                              .doc(userController.userAuth.uid);
+
+                      await FirebaseFirestore.instance
+                          .collection('schedule')
+                          .doc()
+                          .set(scheduleController.actualSchedule.toJson());
+
+                      setState(() {
+                        buttonLoading = false;
+                      });
+
                       routeController.softPush(AppRoutes.SCHEDULEFINISHED);
-                    }
-                  }))
-        ],
+                    }))
+          ],
+        ),
       )),
       bottomNavigationBar: NavBar(),
     );

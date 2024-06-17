@@ -1,5 +1,5 @@
 class Barber {
-  final int id;
+  final String id;
   final String image;
   final String name;
 
@@ -10,9 +10,9 @@ class Barber {
 });
 
   Barber.fromJson(Map<String, dynamic> json)
-  : id = 1,//json['id'],
+  : id = json['id'],
   name = json['name'],
-  image = "assets/img/barber-photo-2.png";
+  image = "assets/img/barber-photo-%id%.png";
 
   Map<String, dynamic> toJson() => {
     'id': id,

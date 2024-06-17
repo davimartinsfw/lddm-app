@@ -88,7 +88,28 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> initializeUserSchedule() async {
-    userSchedule = await scheduleService.getUserSchedule(userAuth.uid);
+    List<Schedule> list = [];
+
+    final userRef =
+        FirebaseFirestore.instance.collection('usuario').doc(userAuth.uid);
+
+    await FirebaseFirestore.instance
+        .collection("schedule")
+        .where("user_id", isEqualTo: userRef)
+        .get()
+        .then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> map = docSnapshot.data();
+          map['id'] = docSnapshot.id;
+
+          list.add(Schedule.fromJson(map));
+        }
+      },
+      onError: (e) => print("Erro ao buscar agendamentos: $e"),
+    );
+
+    userSchedule = list;
   }
 
   Future<void> deleteUser() async {

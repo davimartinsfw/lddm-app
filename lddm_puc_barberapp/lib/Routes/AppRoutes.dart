@@ -11,4 +11,7 @@ class AppRoutes {
   static const CREATEACCOUNTFORM = '/login-create-account';
   static const ABOUTUS = '/about-us';
   static const HOMELOADING = '/home-loading';
+  static const CAMERA = '/camera';
+  static const PREVIEWPAGE = '/preview';
+  static const BARBERSCHEDULEVIEW = '/barber-schedule';
 }

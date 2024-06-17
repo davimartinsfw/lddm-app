@@ -58,9 +58,11 @@ class _ProcedureListViewState extends State<ProcedureListView> {
 
   List<Widget> renderBarberList() {
     List<Widget> list = [];
+    int counter = 0;
 
     scheduleController.barberList.forEach((element) {
-      list.add(renderBarber(element));
+      list.add(renderBarber(element, counter));
+      counter++;
     });
 
     return list;
@@ -86,7 +88,7 @@ class _ProcedureListViewState extends State<ProcedureListView> {
     );
   }
 
-  Widget renderBarber(Barber p) {
+  Widget renderBarber(Barber p, int counter) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
@@ -97,6 +99,7 @@ class _ProcedureListViewState extends State<ProcedureListView> {
         child: BarberBox(
           barber: p,
           shouldShowButton: false,
+          photoId: counter,
         ),
       ),
     );

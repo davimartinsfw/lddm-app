@@ -35,16 +35,16 @@ class _LoginFormButtonState extends State<LoginFormButton> {
 
   bool isFormValid() {
     final bool emailValid = RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(loginController
-        .loginWithEmailTextControllers['email']?.value.text ??
-        "");
+                .loginWithEmailTextControllers['email']?.value.text ??
+            "");
 
     return emailValid &&
         (loginController.loginWithEmailTextControllers['password']?.value
-            .text ??
-            "")
-            .length >=
+                        .text ??
+                    "")
+                .length >=
             1;
   }
 
@@ -69,35 +69,23 @@ class _LoginFormButtonState extends State<LoginFormButton> {
             isLoading = true;
           });
 
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-              email: loginController
+          await userController.login(
+              loginController
                   .loginWithEmailTextControllers['email']!.value.text,
-              password: loginController
+              loginController
                   .loginWithEmailTextControllers['password']!.value.text);
 
-          // final userLogin = {
-          // "email"
-          // : loginController
-          //     .loginWithEmailTextControllers['email']!.value.text,
-          // "password": loginController
-          //     .loginWithEmailTextControllers['password']!.value.text
-          // };
-          // final loggedUser = await userService.login(userLogin);
-          //
-          // if (loggedUser == null) {
-          //   //PARA E MOSTRA ERRO
-          //   loginController.setShowPasswordError(true);
-          //   return;
-          // }
+          final userLogin = {
+            "email": loginController
+                .loginWithEmailTextControllers['email']!.value.text,
+            "password": loginController
+                .loginWithEmailTextControllers['password']!.value.text
+          };
 
-          // final SharedPreferences sharedMemory =
-          //     await SharedPreferences.getInstance();
-          // sharedMemory.setInt('userId', loggedUser.id);
-          // userController.initializeUser(loggedUser);
           routeController.softPush(AppRoutes.HOMELOADING);
 
           setState(() {
-          isLoading = false;
+            isLoading = false;
           });
         },
       ),

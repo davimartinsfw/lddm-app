@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lddm_puc_barberapp/Models/Schedule/Schedule.dart';
 import 'package:lddm_puc_barberapp/services/ScheduleService.dart';
 import '../Models/Procedure/Barber.dart';
@@ -9,9 +12,12 @@ class ScheduleController extends ChangeNotifier {
   late List<Barber> barberList;
   late List<Procedure> procedureList;
   List<Schedule> barberSchedules = [];
+  File? actualPhoto = null;
+  File? actualImage = null;
+  ImagePicker picker = ImagePicker();
   DateTime focusedDate = DateTime.now();
-  late Schedule actualSchedule =
-      Schedule(userId: null, barberId: null, procedureId: null, horario: null);
+  late Schedule actualSchedule = Schedule(
+      id: '', userId: null, barberId: null, procedureId: null, horario: null);
   late ScheduleService scheduleService = ScheduleService();
 
   bool shouldShowProcedure = false;
@@ -20,30 +26,85 @@ class ScheduleController extends ChangeNotifier {
 
   void resetSchedule() {
     actualSchedule = Schedule(
-        userId: null, barberId: null, procedureId: null, horario: null);
+        id: '', userId: null, barberId: null, procedureId: null, horario: null);
     focusedDate = DateTime.now();
+    actualPhoto = null;
+    actualImage = null;
+  }
+
+  void setActualPhoto(File? file) {
+    actualPhoto = file;
+
+    notifyListeners();
+  }
+
+  void setActualImage(File? file) {
+    actualImage = file;
+
+    notifyListeners();
   }
 
   Future<void> initializeBarberList() async {
-    final col = FirebaseFirestore.instance
-        .collection("usuario");
-
-    final query = await col.where("is_barber", isEqualTo: true).get();
     List<Barber> list = [];
 
-    query.docs.forEach((doc) {
-      list.add(Barber.fromJson(doc.data()));
-    });
+    await FirebaseFirestore.instance
+        .collection("usuario")
+        .where("is_barber", isEqualTo: true)
+        .get()
+        .then(
+      (querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> map = docSnapshot.data();
+          map['id'] = docSnapshot.id;
+          list.add(Barber.fromJson(map));
+        }
+      },
+      onError: (e) => print("Erro ao buscar barbeiros: $e"),
+    );
 
     barberList = list;
   }
 
-  void initializeProcedureList(List<Procedure> list) {
+  Future<void> initializeProcedureList() async {
+    List<Procedure> list = [];
+
+    await FirebaseFirestore.instance.collection("procedure").get().then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> map = docSnapshot.data();
+          map['id'] = docSnapshot.id;
+          list.add(Procedure.fromJson(map));
+        }
+      },
+      onError: (e) => print("Erro ao buscar procedimentos: $e"),
+    );
+
     procedureList = list;
   }
 
-  void initializeBarberSchedules(int barberId)  async{
-    barberSchedules = await scheduleService.getBarberSchedule(barberId);
+  Future<void> initializeBarberSchedules(String barberId) async {
+    final barberRef =
+        FirebaseFirestore.instance.collection('usuario').doc(barberId);
+
+    List<Schedule> list = [];
+
+    await FirebaseFirestore.instance
+        .collection("schedule")
+        .where("barber_id", isEqualTo: barberRef)
+        .get()
+        .then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> map = docSnapshot.data();
+          map['id'] = docSnapshot.id;
+          list.add(Schedule.fromJson(map));
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+
+    barberSchedules = list; //await scheduleService.getBarberSchedule(barberId);
     notifyListeners();
   }
 
@@ -67,13 +128,18 @@ class ScheduleController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProfessional(int id) {
-    actualSchedule.barberId = id;
+  void updateProfessional(String id) async {
+    final barberRef = FirebaseFirestore.instance.collection('usuario').doc(id);
+
+    actualSchedule.barberId = barberRef;
     notifyListeners();
   }
 
-  void updateProcedure(int id) {
-    actualSchedule.procedureId = id;
+  void updateProcedure(String id) {
+    final procedureRef =
+        FirebaseFirestore.instance.collection('procedure').doc(id);
+
+    actualSchedule.procedureId = procedureRef;
     notifyListeners();
   }
 

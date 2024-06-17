@@ -32,7 +32,7 @@ class _ScheduleFinishedViewState extends State<ScheduleFinishedView> {
 
   void redirect() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(milliseconds: 400));
+      await Future.delayed(Duration(milliseconds: 1200));
       scheduleController.resetSchedule();
     });
 

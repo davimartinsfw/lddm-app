@@ -53,7 +53,7 @@ class _CreateAccountButtonState extends State<CreateAccountButton> {
           setState(() {
             isLoading = true;
           });
-          userController.createUser({
+          await userController.createUser({
             "email": loginController
                 .loginWithEmailTextControllers['email']!.value.text,
             "password": loginController
